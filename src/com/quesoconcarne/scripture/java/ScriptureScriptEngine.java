@@ -7,7 +7,10 @@ import java.lang.reflect.Method;
 import java.util.List;
 import org.codehaus.janino.SimpleCompiler;
 
-public class JavaTarget implements RunnableBackend {
+/**
+ * This is what in the future will be an implementation of a javax.script.ScriptEngine
+ */
+public class ScriptureScriptEngine implements RunnableBackend {
 
     private File inputFile;
     private File outputFile;
@@ -15,9 +18,11 @@ public class JavaTarget implements RunnableBackend {
 
     public void emit(Node node) throws Exception {
         final SourceFile sourceFile = new SourceFile();
-        final SourceChannel channel = new SourceChannel(null);
 
-        sourceFile.pushChannel(channel);
+        final String anonymousChannelName = "ScriptureAnonymousProphecy00";
+        final SourceChannel anonymousChannel = new ProphecyChannel(anonymousChannelName);
+        
+        sourceFile.pushChannel(anonymousChannel);
         context.getOutput().pushSourceFile(sourceFile);
         context.setInputFile(getInputFile());
         EmitterFactory.getInstance().getEmitterForNode(node).emit(node, context);

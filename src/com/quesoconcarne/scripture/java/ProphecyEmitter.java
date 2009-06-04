@@ -33,34 +33,10 @@ public class ProphecyEmitter implements Emitter<Prophecy> {
             prophecyName = "AnonymousScriptureProphecy" + count;
             context.incrementAnonymousProphecyCounter();
         }
-        final SourceChannel channel = new SourceChannel(prophecyName);
-
+        
+        final SourceChannel channel = new ProphecyChannel(prophecyName);
         sourceFile.pushChannel(channel);
         try {
-            // Start class declaration
-            channel.append("class ");
-            channel.append(prophecyName);
-            channel.append(" extends ");
-            channel.append(GenesisListener.class.getSimpleName());
-            channel.append(" {\n");
-            channel.append("    private static final ");
-            channel.append(prophecyName);
-            channel.append(" INSTANCE = new ");
-            channel.append(prophecyName);
-            channel.append("();\n");
-
-            // Constructor
-            channel.append("    private ");
-            channel.append(prophecyName);
-            channel.append("() {\n");
-            channel.append("        ");
-            channel.append(ProphecyNotificationCenter.class.getSimpleName());
-            channel.append(".getSharedInstance().");
-            channel.append(ProphecyNotificationCenter.ADD_GENESIS_SUBSCRIBER_METHOD_NAME);
-            channel.append("(this);\n    }\n");
-
-            // Genesis start
-            channel.append("    public void run() {\n");
             final EmitterFactory factory = EmitterFactory.getInstance();
             context.pushContainer(prophecy);
             try {
@@ -71,10 +47,6 @@ public class ProphecyEmitter implements Emitter<Prophecy> {
             finally {
                 context.popContainer();
             }
-            channel.append("    }\n");
-
-            // End of class
-            channel.append("}\n");
         }
         finally {
             sourceFile.popChannel();

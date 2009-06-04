@@ -1,6 +1,6 @@
 package com.quesoconcarne.scripture;
 
-import com.quesoconcarne.scripture.java.JavaTarget;
+import com.quesoconcarne.scripture.java.ScriptureScriptEngine;
 import org.antlr.runtime.ANTLRFileStream;
 import org.antlr.runtime.CommonTokenStream;
 import org.antlr.runtime.RecognitionException;
@@ -19,7 +19,7 @@ public class ScriptureC {
         ScriptureParser parser = new ScriptureParser(tokenStream);
         try {
             final Program program = parser.program().result;
-            RunnableBackend backend = new JavaTarget();
+            RunnableBackend backend = new ScriptureScriptEngine();
             backend.run(program);
         } catch (RecognitionException e) {
             e.printStackTrace();

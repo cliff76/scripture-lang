@@ -17,9 +17,12 @@ public class SourceFile {
 
     public String getContents() throws IOException {
         SourceChannel output = new SourceChannel(null);
-        output.append("package ");
-        output.append(getPackageName());
-        output.append(";\n");
+        final String pkg = getPackageName();
+        if (pkg != null) {
+            output.append("package ");
+            output.append(pkg);
+            output.append(";\n");
+        }
 
         output.append("import ");
         output.append(ScriptureObject.class.getPackage().getName());

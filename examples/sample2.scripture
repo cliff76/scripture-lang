@@ -7,12 +7,16 @@ scriptura mynamespace:
 
     order Foo ex nihilo:
         commandment go:
+            pray 1;
             preach "Hello from an instance of Foo!";
         amen
     amen
 
     prophecy genesis:
         preach "There can be multiple prophecies!";
+        pray 2;
+        preach "And they completely independent.";
     amen
 
 amen
+

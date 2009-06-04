@@ -1,0 +1,24 @@
+Program
+   Domain
+      Order
+         Artifact
+      Artifact
+         StringExpression
+      Artifact
+         CreateExpression
+      PrintStatement
+         IntegerExpression
+      IfStatement
+         BooleanExpression
+            IntegerExpression
+            IntegerExpression
+         PrintStatement
+            IntegerExpression
+      IfStatement
+         BooleanExpression
+         IfStatement
+            BooleanExpression
+            PrintStatement
+               StringExpression
+            PrintStatement
+               StringExpression

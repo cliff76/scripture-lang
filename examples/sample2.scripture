@@ -1,0 +1,18 @@
+scriptura mynamespace:
+
+    prophecy genesis:
+        artefactum foo = let there be Foo;
+        foo.go;
+    amen
+
+    order Foo ex nihilo:
+        commandment go:
+            preach "Hello from an instance of Foo!";
+        amen
+    amen
+
+    prophecy genesis:
+        preach "There can be multiple prophecies!";
+    amen
+
+amen

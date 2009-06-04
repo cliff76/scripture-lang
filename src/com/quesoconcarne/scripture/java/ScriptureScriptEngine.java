@@ -34,6 +34,7 @@ public class ScriptureScriptEngine implements RunnableBackend {
         for (SourceFile file : sourceFiles) {
             String mainClassName = file.getPackageName() + "." + SourceFile.BOOTSTRAP_CLASS_NAME;
             String contents = file.getContents();
+            System.out.print(contents);
             
             SimpleCompiler compiler = new SimpleCompiler();
             compiler.cook(contents);

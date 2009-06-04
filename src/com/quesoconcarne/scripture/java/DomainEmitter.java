@@ -7,8 +7,7 @@ import java.util.List;
 public class DomainEmitter implements Emitter<Domain> {
 
     public void emit(Domain domain, EmitContext context) throws Exception {
-        SourceFile sourceFile = new SourceFile();
-        context.getOutput().pushSourceFile(sourceFile);
+        final SourceFile sourceFile = context.getOutput().getCurrentSourceFile();
 
         List<String> nameSegments = domain.getNameSegmentStrings();
         String packageName = ListUtilities.join(nameSegments, ".");

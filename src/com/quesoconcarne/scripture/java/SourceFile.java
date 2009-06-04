@@ -15,6 +15,10 @@ public class SourceFile {
     private List<SourceChannel> channelList = new ArrayList<SourceChannel>();
     private Stack<SourceChannel> channelStack = new Stack<SourceChannel>();
 
+    public SourceFile() {
+        super();
+    }
+
     public String getContents() throws IOException {
         SourceChannel output = new SourceChannel(null);
         final String pkg = getPackageName();

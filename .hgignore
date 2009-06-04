@@ -1,4 +1,5 @@
 build/.*$
+dist/.*$
 src/.+\.class$
 src/.+__Test__.+$
 src/com/quesoconcarne/scripture/ScriptureParser.java

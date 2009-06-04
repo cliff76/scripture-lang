@@ -72,6 +72,7 @@
 
     -->
     <target name="-pre-jar">
+<!--
         <exec dir="build/classes" executable="jar">
             <arg value="xf"/>
             <arg file="lib/antlr-3.1.3.jar"/>
@@ -80,6 +81,7 @@
             <arg value="xf"/>
             <arg file="lib/janino-2.5.15.jar"/>
         </exec>
+-->
     </target>
 
 </project>

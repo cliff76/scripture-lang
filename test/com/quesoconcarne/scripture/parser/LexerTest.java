@@ -1,10 +1,13 @@
 package com.quesoconcarne.scripture.parser;
 
+import java.io.Reader;
 import java.io.StringReader;
+import java.lang.reflect.Constructor;
 import junit.framework.TestCase;
 
 public abstract class LexerTest extends TestCase {
 
+    protected abstract ScriptureLexer getLexer();
     protected abstract String getEst();
     protected abstract String getAlias();
     protected abstract String getAmen();
@@ -110,8 +113,10 @@ public abstract class LexerTest extends TestCase {
     }
 
     protected void testSingleRule(String input, String lexeme, ScriptureTokenType type) throws Exception {
+        final ScriptureLexer lexer = getLexer();
         final StringReader reader = new StringReader(input);
-        final ScriptureLexer lexer = new LexerEn(reader);
+        lexer.yyreset(reader);
+        
         ScriptureToken token = lexer.yylex();
         assertNotNull(token);
         assertEquals(type, token.getType());

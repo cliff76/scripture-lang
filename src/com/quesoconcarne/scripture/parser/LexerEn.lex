@@ -5,6 +5,7 @@ package com.quesoconcarne.scripture.parser;
  */
 %%
 %class LexerEn
+%implements ScriptureLexer
 %final
 %unicode
 %line
@@ -14,14 +15,18 @@ package com.quesoconcarne.scripture.parser;
 %state STRING
 %state REGEXP
 
+%{
+  StringBuffer stringLiteralBuffer = new StringBuffer();
+%}
+
 %eofval{
   return new ScriptureToken(ScriptureTokenType.EOF);
 %eofval}
 
-WHITE_SPACE=([\ \n\r\t\f])+
 %%
 
 
+/********** DO NOT LOCALIZE ABOVE THIS LINE *********/
 /********** Begin localizable tokens **********/
 
 <YYINITIAL> "false"        { return new ScriptureToken(ScriptureTokenType.FALSE, yytext(), yyline, yychar); }
@@ -51,13 +56,35 @@ WHITE_SPACE=([\ \n\r\t\f])+
 <YYINITIAL> "string"       { return new ScriptureToken(ScriptureTokenType.STRING, yytext(), yyline, yychar); }
 <YYINITIAL> "regexp"       { return new ScriptureToken(ScriptureTokenType.REGEXP, yytext(), yyline, yychar); }
 
-/********** End localizable tokens **********/
+/* See the rest of non-localizable comparative operators below */
+<YYINITIAL> "est"          { return new ScriptureToken(ScriptureTokenType.COMPARATIVE_OPERATOR, yytext(), yyline, yychar); }
 
-<YYINITIAL> [:jdigit:]+ { return new ScriptureToken(ScriptureTokenType.INTEGER_LITERAL, yytext(), yyline, yychar); }
+
+/********** End localizable tokens **********/
+/********** DO NOT LOCALIZE BELOW THIS LINE *********/
+
+<YYINITIAL> [:digit:]+ | "0x"[0-9a-fA-F]+ { return new ScriptureToken(ScriptureTokenType.INTEGER_LITERAL, yytext(), yyline, yychar); }
+<YYINITIAL> [:digit:]+"."[:digit:]+ { return new ScriptureToken(ScriptureTokenType.REAL_LITERAL, yytext(), yyline, yychar); }
+<YYINITIAL> "/" ([^/]|"\\/")* "/" [im]{0,2} { return new ScriptureToken(ScriptureTokenType.REGEXP_LITERAL, yytext(), yyline, yychar); }
 <YYINITIAL> [:jletter:] [:jletterdigit:]* { return new ScriptureToken(ScriptureTokenType.IDENTIFIER, yytext(), yyline, yychar); }
 
-<YYINITIAL> {WHITE_SPACE} { /* ignore */ }
+<YYINITIAL> \" { stringLiteralBuffer.setLength(0); stringLiteralBuffer.append(yytext()); yybegin(STRING); }
+<STRING> {
+  \"                             { stringLiteralBuffer.append(yytext()); yybegin(YYINITIAL); return new ScriptureToken(ScriptureTokenType.STRING_LITERAL, stringLiteralBuffer.toString(), yyline, yychar); }
+  [^\n\r\"\\]+                   { stringLiteralBuffer.append(yytext()); }
+  \\\"                           { stringLiteralBuffer.append(yytext()); }
+  \\                             { stringLiteralBuffer.append('\\'); }
+}
 
-/********** Begin localizable error **********/
-.|\n { throw new RuntimeException("Illegal character <"+ yytext()+">"); }
-/********** Eng localizable error **********/
+<YYINITIAL> [+]                                   { return new ScriptureToken(ScriptureTokenType.ADDITION_OPERATOR, null, yyline, yychar); }
+<YYINITIAL> [-]                                   { return new ScriptureToken(ScriptureTokenType.SUBTRACTION_OPERATOR, null, yyline, yychar); }
+<YYINITIAL> [*]                                   { return new ScriptureToken(ScriptureTokenType.MULTIPLICATION_OPERATOR, null, yyline, yychar); }
+<YYINITIAL> [/%]                                  { return new ScriptureToken(ScriptureTokenType.DIVISION_OPERATOR, yytext(), yyline, yychar); }
+<YYINITIAL> "==" | "!=" | "<" | "<=" | ">" | ">=" { return new ScriptureToken(ScriptureTokenType.COMPARATIVE_OPERATOR, yytext(), yyline, yychar); }
+
+
+<YYINITIAL> "#*" [^*] ~"*#" | "#*" "*"+ "#" { /* ignore */ }
+<YYINITIAL> [#] [^\r\n]* (\r|\n|\r\n) { /* ignore */ }
+<YYINITIAL> ([\ \n\r\t\f])+ { /* ignore */ }
+
+.|\n { throw new ScriptureLexerException(yytext(), yyline, yychar); }

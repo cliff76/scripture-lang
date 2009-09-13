@@ -65,7 +65,7 @@ package com.quesoconcarne.scripture.parser;
 
 <YYINITIAL> [:digit:]+ | "0x"[0-9a-fA-F]+ { return new ScriptureToken(ScriptureTokenType.INTEGER_LITERAL, yytext(), yyline, yychar); }
 <YYINITIAL> [:digit:]+"."[:digit:]+ { return new ScriptureToken(ScriptureTokenType.REAL_LITERAL, yytext(), yyline, yychar); }
-<YYINITIAL> "/" ([^/]|"\\/")* "/" [im]{0,2} { return new ScriptureToken(ScriptureTokenType.REGEXP_LITERAL, yytext(), yyline, yychar); }
+<YYINITIAL> "@re(" [^\n\r]* ")re@" [im]{0,2} { return new ScriptureToken(ScriptureTokenType.REGEXP_LITERAL, yytext(), yyline, yychar); }
 <YYINITIAL> [:jletter:] [:jletterdigit:]* { return new ScriptureToken(ScriptureTokenType.IDENTIFIER, yytext(), yyline, yychar); }
 
 <YYINITIAL> \" { stringLiteralBuffer.setLength(0); stringLiteralBuffer.append(yytext()); yybegin(STRING); }

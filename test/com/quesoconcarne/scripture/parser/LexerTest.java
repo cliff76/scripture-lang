@@ -1,8 +1,10 @@
 package com.quesoconcarne.scripture.parser;
 
-import java.io.Reader;
 import java.io.StringReader;
-import java.lang.reflect.Constructor;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Set;
+import java.util.TreeMap;
 import junit.framework.TestCase;
 
 public abstract class LexerTest extends TestCase {
@@ -88,11 +90,10 @@ public abstract class LexerTest extends TestCase {
     }
 
     public void testRegexpLiteral() throws Exception {
-        testSingleRule("/abc/", ScriptureTokenType.REGEXP_LITERAL);
-        testSingleRule("/a\\/bc/", ScriptureTokenType.REGEXP_LITERAL);
-        testSingleRule("/abc/i", ScriptureTokenType.REGEXP_LITERAL);
-        testSingleRule("/abc/m", ScriptureTokenType.REGEXP_LITERAL);
-        testSingleRule("/abc/im", ScriptureTokenType.REGEXP_LITERAL);
+        testSingleRule("@re(abc)re@", ScriptureTokenType.REGEXP_LITERAL);
+        testSingleRule("@re(abc)re@i", ScriptureTokenType.REGEXP_LITERAL);
+        testSingleRule("@re(abc)re@m", ScriptureTokenType.REGEXP_LITERAL);
+        testSingleRule("@re(abc)re@im", ScriptureTokenType.REGEXP_LITERAL);
     }
 
     public void testStringLiteral() throws Exception {
@@ -106,6 +107,82 @@ public abstract class LexerTest extends TestCase {
         testSingleRule("# this is a single-line comment.\n", null, ScriptureTokenType.EOF);
         testSingleRule("#*\nthis is a\nmulti-line comment.\n*#", null, ScriptureTokenType.EOF);
         testSingleRule(" \t  ", null, ScriptureTokenType.EOF);
+    }
+
+    public void testAllTokens() throws Exception {
+        Map<String, ScriptureTokenType> map = new TreeMap<String, ScriptureTokenType>();
+        map.put("\"Some string\"", ScriptureTokenType.STRING_LITERAL);
+        map.put("@re(myregexp)re@mi", ScriptureTokenType.REGEXP_LITERAL);
+        map.put("==", ScriptureTokenType.COMPARATIVE_OPERATOR);
+        map.put("!=", ScriptureTokenType.COMPARATIVE_OPERATOR);
+        map.put("<", ScriptureTokenType.COMPARATIVE_OPERATOR);
+        map.put("<=", ScriptureTokenType.COMPARATIVE_OPERATOR);
+        map.put(">", ScriptureTokenType.COMPARATIVE_OPERATOR);
+        map.put(">=", ScriptureTokenType.COMPARATIVE_OPERATOR);
+        map.put(getEst(), ScriptureTokenType.COMPARATIVE_OPERATOR);
+
+        map.put("+", ScriptureTokenType.ADDITION_OPERATOR);
+        map.put("-", ScriptureTokenType.SUBTRACTION_OPERATOR);
+        map.put("*", ScriptureTokenType.MULTIPLICATION_OPERATOR);
+        map.put("/", ScriptureTokenType.DIVISION_OPERATOR);
+        map.put("%", ScriptureTokenType.DIVISION_OPERATOR);
+        
+        map.put("1234567890", ScriptureTokenType.INTEGER_LITERAL);
+        map.put("0xabcdef1234567890", ScriptureTokenType.INTEGER_LITERAL);
+        map.put("1.2", ScriptureTokenType.REAL_LITERAL);
+
+        map.put(getFalse(), ScriptureTokenType.FALSE);
+        map.put(getTrue(), ScriptureTokenType.TRUE);
+        map.put(getAmen(), ScriptureTokenType.AMEN);
+        map.put(getScripture(), ScriptureTokenType.SCRIPTURE);
+        map.put(getOrder(), ScriptureTokenType.ORDER);
+        map.put(getOf(), ScriptureTokenType.OF);
+        map.put(getProphecy(), ScriptureTokenType.PROPHECY);
+        map.put(getGenesis(), ScriptureTokenType.GENESIS);
+        map.put(getPray(), ScriptureTokenType.PRAY);
+        map.put(getPreach(), ScriptureTokenType.PREACH);
+        map.put(getAlias(), ScriptureTokenType.ALIAS);
+        map.put(getCommandment(), ScriptureTokenType.COMMANDMENT);
+        map.put(getCreate(), ScriptureTokenType.CREATE);
+        map.put(getCreation(), ScriptureTokenType.CREATION);
+        map.put(getArtifact(), ScriptureTokenType.ARTIFACT);
+        map.put(getIf(), ScriptureTokenType.IF);
+        map.put(getElse(), ScriptureTokenType.ELSE);
+        map.put(getAnd(), ScriptureTokenType.AND);
+        map.put(getOr(), ScriptureTokenType.OR);
+        map.put(getXor(), ScriptureTokenType.XOR);
+        map.put(getNot(), ScriptureTokenType.NOT);
+        map.put(getBoolean(), ScriptureTokenType.BOOLEAN);
+        map.put(getInteger(), ScriptureTokenType.INTEGER);
+        map.put(getReal(), ScriptureTokenType.REAL);
+        map.put(getString(), ScriptureTokenType.STRING);
+        map.put(getRegexp(), ScriptureTokenType.REGEXP);
+        
+        final Set<String> keys = map.keySet();
+        final StringBuilder sourceCode = new StringBuilder();
+        final Iterator<String> sourceKeysIterator = keys.iterator();
+        if (sourceKeysIterator.hasNext()) {
+            sourceCode.append(sourceKeysIterator.next());
+        }
+        
+        while (sourceKeysIterator.hasNext()) {
+            sourceCode.append("\n");
+            sourceCode.append(sourceKeysIterator.next());
+        }
+
+        final ScriptureLexer lexer = getLexer();
+        final StringReader reader = new StringReader(sourceCode.toString());
+        lexer.yyreset(reader);
+        final Iterator<String> tokenKeysIterator = keys.iterator();
+        while (tokenKeysIterator.hasNext()) {
+            final String currentKey = tokenKeysIterator.next();
+            final ScriptureToken currentToken = lexer.yylex();
+            final String currentLexeme = currentToken.getText();
+            if (currentLexeme != null) {
+                assertEquals(currentKey,currentLexeme);
+            }
+            assertEquals(map.get(currentKey), currentToken.getType());
+        }
     }
 
     protected void testSingleRule(String input, ScriptureTokenType type) throws Exception {

@@ -1,6 +1,8 @@
 package com.quesoconcarne.scripture.parser;
 
 import com.quesoconcarne.scripture.ast.AtomicExpression;
+import com.quesoconcarne.scripture.ast.BooleanExpression;
+import com.quesoconcarne.scripture.ast.ComparativeExpression;
 import com.quesoconcarne.scripture.ast.CreateExpression;
 import com.quesoconcarne.scripture.ast.Domain;
 import com.quesoconcarne.scripture.ast.Expression;
@@ -118,28 +120,49 @@ public class ScriptureParser {
         throw new UnsupportedOperationException("Not yet implemented");
     }
 
+    public BooleanExpression getBooleanExpression() throws Exception {
+        return null;
+    }
+
+    public ComparativeExpression getComparativeExpression() throws Exception {
+        final KeypathExpression expression = getKeypathExpression();
+        if (expression == null) {
+            return null;
+        }
+        final ScriptureToken operatorToken = lookAhead(1);
+        switch (operatorToken.getType()) {
+            case COMPARATIVE_OPERATOR:
+                consumeToken();
+                final KeypathExpression keypathExpression = getKeypathExpression();
+                if (keypathExpression == null) {
+                    return null;
+                }
+                return new ComparativeExpression(expression, operatorToken, keypathExpression);
+            default:
+                return new ComparativeExpression(expression, null, null);
+        }
+    }
+
     public KeypathExpression getKeypathExpression() throws Exception {
-        final Expression atomicExpression = getAtomicExpression();
-        if (atomicExpression == null) {
+        final Expression expression = getAtomicExpression();
+        if (expression == null) {
             return null;
         }
         final ScriptureToken dotToken = lookAhead(1);
         switch (dotToken.getType()) {
             case DOT:
-                consumeToken();
-                break;
+                final ScriptureToken identifierToken = lookAhead(2);
+                switch (identifierToken.getType()) {
+                    case IDENTIFIER:
+                        consumeToken();
+                        consumeToken();
+                        return new KeypathExpression(expression, dotToken, identifierToken);
+                    default:
+                        validationResult.appendError("Expecting identifier but got: " + identifierToken.getLexeme());
+                        return null;
+                }
             default:
-                validationResult.appendError("Expecting . but got: " + dotToken.getLexeme());
-                return null;
-        }
-        final ScriptureToken identifierToken = lookAhead(1);
-        switch (identifierToken.getType()) {
-            case IDENTIFIER:
-                consumeToken();
-                return new KeypathExpression(atomicExpression, dotToken, identifierToken);
-            default:
-                validationResult.appendError("Expecting identifier but got: " + identifierToken.getLexeme());
-                return null;
+                return new KeypathExpression(expression, null, null);
         }
     }
 
@@ -156,10 +179,10 @@ public class ScriptureParser {
                 consumeToken();
                 return new AtomicExpression(token);
             case CREATE:
-                consumeToken();
-                final ScriptureToken identifierToken = lookAhead(1);
+                final ScriptureToken identifierToken = lookAhead(2);
                 switch (identifierToken.getType()) {
                     case IDENTIFIER:
+                        consumeToken();
                         consumeToken();
                         return new CreateExpression(identifierToken);
                     default:

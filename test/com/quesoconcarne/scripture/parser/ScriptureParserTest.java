@@ -53,6 +53,20 @@ public class ScriptureParserTest extends TestCase {
         assertNotNull(key);
         assertEquals(ScriptureTokenType.IDENTIFIER, key.getType());
         assertEquals(keyString, key.getLexeme());
+
+        final ScriptureParser keylessParser = createParser(receiverString);
+        final KeypathExpression keylessExpression = keylessParser.getKeypathExpression();
+        assertNotNull(keylessExpression);
+        final Expression keylessReceiver = keylessExpression.getLeft();
+        assertNotNull(keylessReceiver);
+        assertTrue(keylessReceiver instanceof AtomicExpression);
+        final AtomicExpression keylessReceiverAtomic = (AtomicExpression) receiver;
+        final ScriptureToken keylessLiteral = keylessReceiverAtomic.getLiteral();
+        assertNotNull(keylessLiteral);
+        assertEquals(ScriptureTokenType.IDENTIFIER, keylessLiteral.getType());
+        assertEquals(receiverString, keylessLiteral.getLexeme());
+        assertNull(keylessExpression.getOperator());
+        assertNull(keylessExpression.getKey());
     }
     
     public void testAtomicExpression() throws Exception {

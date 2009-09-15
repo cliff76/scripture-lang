@@ -32,7 +32,7 @@ artifact : ARTIFACT IDENTIFIER (EQUAL expression)? SEMICOLON;
 
 statement : expression_statement
           | if_statement
-          | print_statement
+          | preach_statement
           | preach_statement
           ;
 

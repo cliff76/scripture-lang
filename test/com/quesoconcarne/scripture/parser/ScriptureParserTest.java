@@ -1,11 +1,15 @@
 package com.quesoconcarne.scripture.parser;
 
+import com.quesoconcarne.scripture.ast.AssignmentExpression;
+import com.quesoconcarne.scripture.ast.Block;
 import com.quesoconcarne.scripture.ast.BooleanExpression;
 import com.quesoconcarne.scripture.ast.AtomicExpression;
 import com.quesoconcarne.scripture.ast.ComparativeExpression;
 import com.quesoconcarne.scripture.ast.CreateExpression;
 import com.quesoconcarne.scripture.ast.Domain;
 import com.quesoconcarne.scripture.ast.Expression;
+import com.quesoconcarne.scripture.ast.ExpressionStatement;
+import com.quesoconcarne.scripture.ast.IfStatement;
 import com.quesoconcarne.scripture.ast.KeypathExpression;
 import com.quesoconcarne.scripture.ast.PrayStatement;
 import com.quesoconcarne.scripture.ast.PreachStatement;
@@ -38,10 +42,69 @@ public class ScriptureParserTest extends TestCase {
         assertEquals(0, blockContents.size());
     }
 
+    public void testIfStatement() throws Exception {
+        final String expressionString = "true";
+        final String ifBlockString = "preach \"It is true!\";";
+        final String elseBlockString = "pray 1;";
+        final String code = "if " + expressionString + " : " + ifBlockString + " else " + elseBlockString + " amen";
+        final ScriptureParser parser = createParser(code);
+        final Statement statement = parser.getIfStatement();
+        assertNotNull(statement);
+        assertEquals(IfStatement.class, statement.getClass());
+        final IfStatement ifStatement = (IfStatement) statement;
+        
+        final Expression expression = ifStatement.getExpression();
+        assertNotNull(expression);
+        assertEquals(BooleanExpression.class, expression.getClass());
+        final BooleanExpression boolExpr = (BooleanExpression) expression;
+        assertEquals(Boolean.TRUE, boolExpr.getValue());
+        assertNull(boolExpr.getLeft());
+        assertNull(boolExpr.getOperator());
+        assertNull(boolExpr.getRight());
+        
+        final Block ifBlock = ifStatement.getIfBlock();
+        assertNotNull(ifBlock);
+
+        final Block elseBlock = ifStatement.getElseBlock();
+        assertNotNull(elseBlock);
+    }
+
+    public void testExpressionStatement() throws Exception {
+        final String code = "a = b;";
+        final ScriptureParser parser = createParser(code);
+        final Statement statement = parser.getExpressionStatement();
+        assertNotNull(statement);
+        assertEquals(ExpressionStatement.class, statement.getClass());
+        final ExpressionStatement exprStatement = (ExpressionStatement) statement;
+        final Expression expr = exprStatement.getExpression();
+        assertNotNull(expr);
+        assertEquals(AssignmentExpression.class, expr.getClass());
+        final AssignmentExpression assign = (AssignmentExpression) expr;
+        
+        final Expression left = assign.getLeft();
+        assertNotNull(left);
+        assertEquals(AtomicExpression.class, left.getClass());
+        final AtomicExpression atomicLeft = (AtomicExpression) left;
+        final ScriptureToken literalLeft = atomicLeft.getLiteral();
+        assertNotNull(literalLeft);
+        assertEquals(ScriptureTokenType.IDENTIFIER, literalLeft.getType());
+        assertEquals("a", literalLeft.getLexeme());
+
+        final Expression right = assign.getRight();
+        assertNotNull(right);
+        assertEquals(AtomicExpression.class, right.getClass());
+        final AtomicExpression atomicRight = (AtomicExpression) right;
+        final ScriptureToken literalRight = atomicRight.getLiteral();
+        assertNotNull(literalRight);
+        assertEquals(ScriptureTokenType.IDENTIFIER, literalRight.getType());
+        assertEquals("b", literalRight.getLexeme());
+    }
+
     public void testPreachStatement() throws Exception {
         testPreachStatement("preach \"Hello World\";", null, "\"Hello World\"");
         testPreachStatement("preach stderr, \"Hello World\";", "stderr", "\"Hello World\"");
     }
+    
     public void testPreachStatement(String code, String expecteStreamLexeme, String expectedLiteralLexeme) throws Exception {
         final ScriptureParser parser = createParser(code);
         final Statement statement = parser.getPreachStatement();

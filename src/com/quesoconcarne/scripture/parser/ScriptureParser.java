@@ -3,11 +3,14 @@ package com.quesoconcarne.scripture.parser;
 import com.quesoconcarne.scripture.ast.ArithmeticExpression;
 import com.quesoconcarne.scripture.ast.AssignmentExpression;
 import com.quesoconcarne.scripture.ast.AtomicExpression;
+import com.quesoconcarne.scripture.ast.Block;
 import com.quesoconcarne.scripture.ast.BooleanExpression;
 import com.quesoconcarne.scripture.ast.ComparativeExpression;
 import com.quesoconcarne.scripture.ast.CreateExpression;
 import com.quesoconcarne.scripture.ast.Domain;
 import com.quesoconcarne.scripture.ast.Expression;
+import com.quesoconcarne.scripture.ast.ExpressionStatement;
+import com.quesoconcarne.scripture.ast.IfStatement;
 import com.quesoconcarne.scripture.ast.KeypathExpression;
 import com.quesoconcarne.scripture.ast.Node;
 import com.quesoconcarne.scripture.ast.PrayStatement;
@@ -16,7 +19,6 @@ import com.quesoconcarne.scripture.ast.Program;
 import com.quesoconcarne.scripture.ast.Statement;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
 
 public class ScriptureParser {
@@ -27,7 +29,7 @@ public class ScriptureParser {
 
     public ScriptureParser(ScriptureLexer lexer) {
         this.lexer = lexer;
-        this.tokenBuffer = new LinkedList<ScriptureToken>();
+        this.tokenBuffer = new ArrayList<ScriptureToken>();
         this.validationResult = new ValidationResult();
     }
 
@@ -119,6 +121,96 @@ public class ScriptureParser {
 
     public Node getDomainContent() {
         return null;
+    }
+
+    public Statement getStatement() throws Exception {
+        final Statement expr = getExpressionStatement();
+        if (expr != null) {
+            return expr;
+        }
+
+        // TODO: Do if statment
+
+        final Statement preach = getPreachStatement();
+        if (preach != null) {
+            return preach;
+        }
+
+        final Statement pray = getPrayStatement();
+        if (pray != null) {
+            return pray;
+        }
+
+        return null;
+    }
+
+    public Block getBlock() throws Exception {
+        List<Node> nodes = new ArrayList();
+        Node currentNode = getStatement();
+        while (currentNode != null) {
+            nodes.add(currentNode);
+            currentNode = getStatement();
+        }
+        return new Block(nodes);
+    }
+
+    public Statement getIfStatement() throws Exception {
+        final ScriptureToken token = lookAhead(1);
+        switch (token.getType()) {
+            case IF:
+                consumeToken();
+                final Expression expr = getExpression();
+                if (expr == null) {
+                    validationResult.appendError("Expecting expression after: " + token.getLexeme());
+                    return null;
+                }
+                final ScriptureToken delim = lookAhead(1);
+                switch (delim.getType()) {
+                    case DELIMITER:
+                        consumeToken();
+                        final Block ifBlock = getBlock();
+                        Block elseBlock = null;
+                        final ScriptureToken elseToken = lookAhead(1);
+                        switch (elseToken.getType()) {
+                            case ELSE:
+                                consumeToken();
+                                elseBlock = getBlock();
+                                break;
+                            default:
+                                break;
+                        }
+                        final ScriptureToken amen = lookAhead(1);
+                        switch (amen.getType()) {
+                            case AMEN:
+                                consumeToken();
+                                return new IfStatement(expr, ifBlock, elseBlock);
+                            default:
+                                validationResult.appendError("Expecting amen but got: " + amen.getLexeme());
+                                return null;
+                        }
+                    default:
+                        validationResult.appendError("Expecting : but got: " + delim.getLexeme());
+                        return null;
+                }
+            default:
+                return null;
+        }
+    }
+
+    public Statement getExpressionStatement() throws Exception {
+        final Expression expr = getExpression();
+        if (expr == null) {
+            return null;
+        }
+        final ScriptureToken token = lookAhead(1);
+        switch (token.getType()) {
+            case SEMICOLON:
+                consumeToken();
+                return new ExpressionStatement(expr);
+            default:
+                validationResult.appendError("Expecting ; but got: " + token.getLexeme());
+                return null;
+        }
     }
 
     public Statement getPreachStatement() throws Exception {

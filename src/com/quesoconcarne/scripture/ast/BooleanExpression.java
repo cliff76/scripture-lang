@@ -11,12 +11,12 @@ public class BooleanExpression extends Expression {
     private ScriptureToken operator;
     private Expression right;
 
-    BooleanExpression(Boolean value) {
+    public BooleanExpression(Boolean value) {
         super();
         this.value = value;
     }
 
-    BooleanExpression(Expression left, ScriptureToken operator, Expression right) {
+    public BooleanExpression(Expression left, ScriptureToken operator, Expression right) {
         super();
         this.left = left;
         this.operator = operator;

@@ -120,8 +120,38 @@ public class ScriptureParser {
         throw new UnsupportedOperationException("Not yet implemented");
     }
 
-    public BooleanExpression getBooleanExpression() throws Exception {
-        return null;
+    public Expression getBooleanExpression() throws Exception {
+        final ScriptureToken booleanOpeartorToken = lookAhead(1);
+        switch (booleanOpeartorToken.getType()) {
+            case NOT:
+                consumeToken();
+                final Expression negatedExpression = getComparativeExpression();
+                if (negatedExpression == null) {
+                    validationResult.appendError("Expecting expression after: " + booleanOpeartorToken.getLexeme());
+                    return null;
+                }
+                return new BooleanExpression(booleanOpeartorToken, negatedExpression);
+            default:
+                final Expression left = getComparativeExpression();
+                if (left == null) {
+                    return null;
+                }
+                final ScriptureToken token = lookAhead(1);
+                switch (token.getType()) {
+                    case AND:
+                    case OR:
+                    case XOR:
+                        final Expression right = getComparativeExpression();
+                        if (right == null) {
+                            validationResult.appendError("Expecting expression after: " + token.getLexeme());
+                            return null;
+                        }
+                        return new BooleanExpression(left, token, right);
+                    default:
+                        validationResult.appendError("Expecting boolean operator at line " + token.getLine() + " column " + token.getCharacter());
+                        return null;
+                }
+        }
     }
 
     public Expression getComparativeExpression() throws Exception {
@@ -135,6 +165,7 @@ public class ScriptureParser {
                 consumeToken();
                 final Expression keypathExpression = getKeypathExpression();
                 if (keypathExpression == null) {
+                    validationResult.appendError("Expecting expression after: " + operatorToken.getLexeme());
                     return null;
                 }
                 return new ComparativeExpression(expression, operatorToken, keypathExpression);
@@ -174,10 +205,14 @@ public class ScriptureParser {
             case STRING_LITERAL:
             case REGEXP_LITERAL:
             case IDENTIFIER:
-            case TRUE:
-            case FALSE:
                 consumeToken();
                 return new AtomicExpression(token);
+            case TRUE:
+                consumeToken();
+                return new BooleanExpression(Boolean.TRUE);
+            case FALSE:
+                consumeToken();
+                return new BooleanExpression(Boolean.FALSE);
             case CREATE:
                 final ScriptureToken identifierToken = lookAhead(2);
                 switch (identifierToken.getType()) {

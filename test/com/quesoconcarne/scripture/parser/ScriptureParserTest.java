@@ -1,5 +1,6 @@
 package com.quesoconcarne.scripture.parser;
 
+import com.quesoconcarne.scripture.ast.BooleanExpression;
 import com.quesoconcarne.scripture.ast.AtomicExpression;
 import com.quesoconcarne.scripture.ast.ComparativeExpression;
 import com.quesoconcarne.scripture.ast.CreateExpression;
@@ -138,8 +139,24 @@ public class ScriptureParserTest extends TestCase {
         testAtomicExpression("\"This is a string\"", ScriptureTokenType.STRING_LITERAL);
         testAtomicExpression("@re(abc1234)re@", ScriptureTokenType.REGEXP_LITERAL);
         testAtomicExpression("someRandomIdentifier", ScriptureTokenType.IDENTIFIER);
-        testAtomicExpression("true", ScriptureTokenType.TRUE);
-        testAtomicExpression("false", ScriptureTokenType.FALSE);
+        
+        final ScriptureParser trueParser = createParser("true");
+        final Expression trueExpression = trueParser.getAtomicExpression();
+        assertEquals(BooleanExpression.class, trueExpression.getClass());
+        final BooleanExpression trueBoolean = (BooleanExpression) trueExpression;
+        assertEquals(Boolean.TRUE, trueBoolean.getValue());
+        assertNull(trueBoolean.getLeft());
+        assertNull(trueBoolean.getOperator());
+        assertNull(trueBoolean.getRight());
+        
+        final ScriptureParser falseParser = createParser("false");
+        final Expression falseExpression = falseParser.getAtomicExpression();
+        assertEquals(BooleanExpression.class, falseExpression.getClass());
+        final BooleanExpression falseBoolean = (BooleanExpression) falseExpression;
+        assertEquals(Boolean.FALSE, falseBoolean.getValue());
+        assertNull(falseBoolean.getLeft());
+        assertNull(falseBoolean.getOperator());
+        assertNull(falseBoolean.getRight());
 
         final String createType = "Foo";
         final String createInput = "let there be " + createType;

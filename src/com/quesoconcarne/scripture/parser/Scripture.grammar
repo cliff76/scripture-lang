@@ -57,14 +57,9 @@ division_expression : multiplication_expression (DIVISION_OPERATOR multiplicatio
 
 multiplication_expression : boolean_expression (MULTIPLICATION_OPERATOR boolean_expression)?;
 
-boolean_expression : comparative_expression (boolean_operator comparative_expression)?
-                   | NOT comparative_expression
+boolean_expression : NOT comparative_expression
+                   | comparative_expression ((AND|OR|XOR) comparative_expression)?
                    ;
-
-boolean_operator : AND
-                 | OR
-                 | XOR
-                 ;
 
 comparative_expression : keypath_expression (COMPARATIVE_OPERATOR keypath_expression)?;
 

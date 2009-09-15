@@ -1,6 +1,7 @@
 package com.quesoconcarne.scripture.parser;
 
 import com.quesoconcarne.scripture.ast.AtomicExpression;
+import com.quesoconcarne.scripture.ast.ComparativeExpression;
 import com.quesoconcarne.scripture.ast.CreateExpression;
 import com.quesoconcarne.scripture.ast.Domain;
 import com.quesoconcarne.scripture.ast.Expression;
@@ -33,6 +34,43 @@ public class ScriptureParserTest extends TestCase {
         assertEquals(0, blockContents.size());
     }
 
+    public void testComparativeExpressionLeftOnly() throws Exception {
+        final String leftString = "foo";
+        final ScriptureParser parser = createParser(leftString);
+        final ComparativeExpression comparativeExpression = parser.getComparativeExpression();
+        assertNotNull(comparativeExpression);
+        final Expression left = comparativeExpression.getLeft();
+        assertNull(comparativeExpression.getOperator());
+        assertNull(comparativeExpression.getRight());
+        assertNotNull(left);
+        assertTrue(left instanceof KeypathExpression);
+        final KeypathExpression leftKeypath = (KeypathExpression) left;
+        final Expression leftExpression = leftKeypath.getLeft();
+        assertNotNull(leftExpression);
+        assertTrue(leftExpression instanceof AtomicExpression);
+        final AtomicExpression leftAtomic = (AtomicExpression) leftExpression;
+        final ScriptureToken leftLiteral = leftAtomic.getLiteral();
+        assertNotNull(leftLiteral);
+        assertEquals(ScriptureTokenType.IDENTIFIER, leftLiteral.getType());
+        assertEquals(leftString, leftLiteral.getLexeme());
+    }
+
+    public void testKeypathExpressionKeyless() throws Exception {
+        final String input = "foo";
+        final ScriptureParser parser = createParser(input);
+        final KeypathExpression keypathExpr = parser.getKeypathExpression();
+        assertNotNull(keypathExpr);
+        assertNull(keypathExpr.getOperator());
+        assertNull(keypathExpr.getKey());
+        final Expression left = keypathExpr.getLeft();
+        assertNotNull(left);
+        assertTrue(left instanceof AtomicExpression);
+        final AtomicExpression atomicLeft = (AtomicExpression) left;
+        final ScriptureToken leftLitarl = atomicLeft.getLiteral();
+        assertNotNull(leftLitarl);
+        assertEquals(ScriptureTokenType.IDENTIFIER, leftLitarl.getType());
+        assertEquals(input, leftLitarl.getLexeme());
+    }
     public void testKeypathExpression() throws Exception {
         final String receiverString = "foo";
         final String keyString = "bar";
@@ -53,20 +91,6 @@ public class ScriptureParserTest extends TestCase {
         assertNotNull(key);
         assertEquals(ScriptureTokenType.IDENTIFIER, key.getType());
         assertEquals(keyString, key.getLexeme());
-
-        final ScriptureParser keylessParser = createParser(receiverString);
-        final KeypathExpression keylessExpression = keylessParser.getKeypathExpression();
-        assertNotNull(keylessExpression);
-        final Expression keylessReceiver = keylessExpression.getLeft();
-        assertNotNull(keylessReceiver);
-        assertTrue(keylessReceiver instanceof AtomicExpression);
-        final AtomicExpression keylessReceiverAtomic = (AtomicExpression) receiver;
-        final ScriptureToken keylessLiteral = keylessReceiverAtomic.getLiteral();
-        assertNotNull(keylessLiteral);
-        assertEquals(ScriptureTokenType.IDENTIFIER, keylessLiteral.getType());
-        assertEquals(receiverString, keylessLiteral.getLexeme());
-        assertNull(keylessExpression.getOperator());
-        assertNull(keylessExpression.getKey());
     }
     
     public void testAtomicExpression() throws Exception {

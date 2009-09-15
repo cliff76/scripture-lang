@@ -141,6 +141,7 @@ public class ScriptureParser {
                     case AND:
                     case OR:
                     case XOR:
+                        consumeToken();
                         final Expression right = getComparativeExpression();
                         if (right == null) {
                             validationResult.appendError("Expecting expression after: " + token.getLexeme());

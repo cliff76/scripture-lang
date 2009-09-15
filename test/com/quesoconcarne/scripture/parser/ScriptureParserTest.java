@@ -35,6 +35,53 @@ public class ScriptureParserTest extends TestCase {
         assertEquals(0, blockContents.size());
     }
 
+    public void testBooleanExpression() throws Exception {
+        testBooleanExpression("foo", "and", "bar", ScriptureTokenType.IDENTIFIER, ScriptureTokenType.AND, ScriptureTokenType.IDENTIFIER);
+        testBooleanExpression("foo", "or", "bar", ScriptureTokenType.IDENTIFIER, ScriptureTokenType.OR, ScriptureTokenType.IDENTIFIER);
+        testBooleanExpression("foo", "xor", "bar", ScriptureTokenType.IDENTIFIER, ScriptureTokenType.XOR, ScriptureTokenType.IDENTIFIER);
+
+        testBooleanExpression("foo", "and", "1", ScriptureTokenType.IDENTIFIER, ScriptureTokenType.AND, ScriptureTokenType.INTEGER_LITERAL);
+        testBooleanExpression("2", "or", "bar", ScriptureTokenType.INTEGER_LITERAL, ScriptureTokenType.OR, ScriptureTokenType.IDENTIFIER);
+        testBooleanExpression("1.2", "xor", "bar", ScriptureTokenType.REAL_LITERAL, ScriptureTokenType.XOR, ScriptureTokenType.IDENTIFIER);
+    }
+    
+    public void testBooleanExpression(
+            String leftString,
+            String operatorString,
+            String rightString,
+            ScriptureTokenType leftTokenType,
+            ScriptureTokenType operatorTokenType,
+            ScriptureTokenType rightTokenType) throws Exception {
+        final String input = leftString + " " + operatorString + " " + rightString;
+        final ScriptureParser parser = createParser(input);
+        final Expression expression = parser.getBooleanExpression();
+        assertNotNull(expression);
+        assertEquals(BooleanExpression.class, expression.getClass());
+        final BooleanExpression booleanExpression = (BooleanExpression) expression;
+        
+        final Expression left = booleanExpression.getLeft();
+        assertNotNull(left);
+        assertEquals(AtomicExpression.class, left.getClass());
+        final AtomicExpression atomicLeft = (AtomicExpression) left;
+        final ScriptureToken literalLeft = atomicLeft.getLiteral();
+        assertNotNull(literalLeft);
+        assertEquals(leftTokenType, literalLeft.getType());
+        assertEquals(leftString, literalLeft.getLexeme());
+        
+        final ScriptureToken operator = booleanExpression.getOperator();
+        assertNotNull(operator);
+        assertEquals(operatorTokenType, operator.getType());
+        
+        final Expression right = booleanExpression.getRight();
+        assertNotNull(right);
+        assertEquals(AtomicExpression.class, right.getClass());
+        final AtomicExpression atomicRight = (AtomicExpression) right;
+        final ScriptureToken literalRight = atomicRight.getLiteral();
+        assertNotNull(literalRight);
+        assertEquals(rightTokenType, literalRight.getType());
+        assertEquals(rightString, literalRight.getLexeme());
+    }
+
     public void testComparativeExpressionLeftOnly() throws Exception {
         final String leftString = "foo";
         final ScriptureParser parser = createParser(leftString);
@@ -109,6 +156,7 @@ public class ScriptureParserTest extends TestCase {
         assertEquals(ScriptureTokenType.IDENTIFIER, leftLitarl.getType());
         assertEquals(input, leftLitarl.getLexeme());
     }
+    
     public void testKeypathExpression() throws Exception {
         final String receiverString = "foo";
         final String keyString = "bar";

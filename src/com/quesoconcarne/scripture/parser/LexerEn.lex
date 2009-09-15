@@ -77,8 +77,10 @@ package com.quesoconcarne.scripture.parser;
 }
 
 <YYINITIAL> [:] { return new ScriptureToken(ScriptureTokenType.DELIMITER, null, yyline, yychar); }
+<YYINITIAL> [;] { return new ScriptureToken(ScriptureTokenType.SEMICOLON, null, yyline, yychar); }
 <YYINITIAL> [=] { return new ScriptureToken(ScriptureTokenType.EQUAL, null, yyline, yychar); }
 <YYINITIAL> \.  { return new ScriptureToken(ScriptureTokenType.DOT, null, yyline, yychar); }
+<YYINITIAL> \,  { return new ScriptureToken(ScriptureTokenType.COMMA, null, yyline, yychar); }
 <YYINITIAL> \(  { return new ScriptureToken(ScriptureTokenType.LEFT_PARENTHESIS, null, yyline, yychar); }
 <YYINITIAL> \)  { return new ScriptureToken(ScriptureTokenType.RIGHT_PARENTHESIS, null, yyline, yychar); }
 <YYINITIAL> \[  { return new ScriptureToken(ScriptureTokenType.LEFT_BRACKET, null, yyline, yychar); }

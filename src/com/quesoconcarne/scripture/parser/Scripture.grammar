@@ -33,7 +33,7 @@ artifact : ARTIFACT IDENTIFIER (EQUAL expression)? SEMICOLON;
 statement : expression_statement
           | if_statement
           | print_statement
-          | pray_statement
+          | preach_statement
           ;
 
 expression_statement : expression SEMICOLON;
@@ -41,7 +41,7 @@ expression_statement : expression SEMICOLON;
 // TODO: Consider making the the 'if' an expression
 if_statement : IF expression DELIMITER block (ELSE block)? AMEN;
 
-print_statement : PREACH (IDENTIFIER ',')? expression SEMICOLON;
+preach_statement : PREACH (IDENTIFIER ',')? expression SEMICOLON;
 
 pray_statement : PRAY expression SEMICOLON;
 

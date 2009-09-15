@@ -37,4 +37,9 @@ public class ScriptureToken {
         return type;
     }
 
+    @Override
+    public String toString() {
+        return type + "(" + line + "," + character + ") : " + lexeme;
+    }
+
 }

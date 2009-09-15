@@ -10,7 +10,10 @@ import com.quesoconcarne.scripture.ast.Domain;
 import com.quesoconcarne.scripture.ast.Expression;
 import com.quesoconcarne.scripture.ast.KeypathExpression;
 import com.quesoconcarne.scripture.ast.Node;
+import com.quesoconcarne.scripture.ast.PrayStatement;
+import com.quesoconcarne.scripture.ast.PreachStatement;
 import com.quesoconcarne.scripture.ast.Program;
+import com.quesoconcarne.scripture.ast.Statement;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -116,6 +119,77 @@ public class ScriptureParser {
 
     public Node getDomainContent() {
         return null;
+    }
+
+    public Statement getPreachStatement() throws Exception {
+        final ScriptureToken token = lookAhead(1);
+        switch (token.getType()) {
+            case PREACH:
+                consumeToken();
+                final ScriptureToken identifier = lookAhead(1);
+                boolean hasIdentifier = false;
+                switch (identifier.getType()) {
+                    case IDENTIFIER:
+                        final ScriptureToken comma = lookAhead(2);
+                        switch (comma.getType()) {
+                            case COMMA:
+                                consumeToken(); // identifier
+                                consumeToken(); // comma
+                                hasIdentifier = true;
+                            default:
+                                // do nothing for optional rule
+                                break;
+                        }
+                    default:
+                        // do nothing for optional rule
+                        break;
+                }
+                final Expression expr = getExpression();
+                if (expr == null) {
+                    validationResult.appendError("Expecting expression after: " + token.getLexeme());
+                    return null;
+                }
+                final ScriptureToken semi = lookAhead(1);
+                switch (semi.getType()) {
+                    case SEMICOLON:
+                        consumeToken();
+                        if (hasIdentifier) {
+                            return new PreachStatement(identifier, expr);
+                        }
+                        else {
+                            return new PreachStatement(null, expr);
+                        }
+                    default:
+                        validationResult.appendError("Expecting ; but got: " + token.getLexeme());
+                        return null;
+                }
+            default:
+                return null;
+                
+        }
+    }
+
+    public Statement getPrayStatement() throws Exception {
+        final ScriptureToken token = lookAhead(1);
+        switch (token.getType()) {
+            case PRAY:
+                consumeToken();
+                final Expression expr = getExpression();
+                if (expr == null) {
+                    validationResult.appendError("Expecting expression after: " + token.getLexeme());
+                    return null;
+                }
+                final ScriptureToken semi = lookAhead(1);
+                switch (semi.getType()) {
+                    case SEMICOLON:
+                        consumeToken();
+                        return new PrayStatement(expr);
+                    default:
+                        validationResult.appendError("Expecting ; but got: " + semi.getLexeme());
+                }
+            default:
+                return null;
+        }
     }
 
     public Expression getExpression() throws Exception {

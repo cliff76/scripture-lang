@@ -14,7 +14,7 @@ import com.quesoconcarne.scripture.KeypathExpression;
 import com.quesoconcarne.scripture.Node;
 import com.quesoconcarne.scripture.Order;
 import com.quesoconcarne.scripture.PrayStatement;
-import com.quesoconcarne.scripture.PrintStatement;
+import com.quesoconcarne.scripture.PreachStatement;
 import com.quesoconcarne.scripture.Prophecy;
 import com.quesoconcarne.scripture.Program;
 import java.util.HashMap;
@@ -71,7 +71,7 @@ public class EmitterFactory {
             map.put(IfStatement.class, IfStatementEmitter.class);
             map.put(Order.class, OrderEmitter.class);
             map.put(PrayStatement.class, PrayStatementEmitter.class);
-            map.put(PrintStatement.class, PrintStatementEmitter.class);
+            map.put(PreachStatement.class, PrintStatementEmitter.class);
             map.put(Prophecy.class, ProphecyEmitter.class);
             map.put(Program.class, ProgramEmitter.class);
             emitterMap = map;

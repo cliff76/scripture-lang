@@ -7,7 +7,10 @@ import com.quesoconcarne.scripture.ast.CreateExpression;
 import com.quesoconcarne.scripture.ast.Domain;
 import com.quesoconcarne.scripture.ast.Expression;
 import com.quesoconcarne.scripture.ast.KeypathExpression;
+import com.quesoconcarne.scripture.ast.PrayStatement;
+import com.quesoconcarne.scripture.ast.PreachStatement;
 import com.quesoconcarne.scripture.ast.Program;
+import com.quesoconcarne.scripture.ast.Statement;
 import java.io.IOException;
 import java.io.StringReader;
 import java.util.List;
@@ -33,6 +36,51 @@ public class ScriptureParserTest extends TestCase {
         final List blockContents = domain.getBlockContents();
         assertNotNull(blockContents);
         assertEquals(0, blockContents.size());
+    }
+
+    public void testPreachStatement() throws Exception {
+        testPreachStatement("preach \"Hello World\";", null, "\"Hello World\"");
+        testPreachStatement("preach stderr, \"Hello World\";", "stderr", "\"Hello World\"");
+    }
+    public void testPreachStatement(String code, String expecteStreamLexeme, String expectedLiteralLexeme) throws Exception {
+        final ScriptureParser parser = createParser(code);
+        final Statement statement = parser.getPreachStatement();
+        assertNotNull(statement);
+        assertEquals(PreachStatement.class, statement.getClass());
+
+        final PreachStatement preach = (PreachStatement) statement;
+        if (expecteStreamLexeme != null) {
+            final ScriptureToken stream = preach.getStream();
+            assertNotNull(stream);
+            assertEquals(ScriptureTokenType.IDENTIFIER, stream.getType());
+            assertEquals(expecteStreamLexeme, stream.getLexeme());
+        }
+        final Expression expr = preach.getExpression();
+        assertNotNull(expr);
+        assertEquals(AtomicExpression.class, expr.getClass());
+        final AtomicExpression atomic = (AtomicExpression) expr;
+        final ScriptureToken literal = atomic.getLiteral();
+        assertNotNull(literal);
+        assertEquals(ScriptureTokenType.STRING_LITERAL, literal.getType());
+        assertEquals(expectedLiteralLexeme, literal.getLexeme());
+    }
+
+    public void testPrayStatement() throws Exception {
+        final String code = "pray 1;";
+        final ScriptureParser parser = createParser(code);
+        final Statement statement = parser.getPrayStatement();
+        assertNotNull(statement);
+        assertEquals(PrayStatement.class, statement.getClass());
+
+        final PrayStatement pray = (PrayStatement) statement;
+        final Expression expression = pray.getExpression();
+        assertNotNull(expression);
+        assertEquals(AtomicExpression.class, expression.getClass());
+        AtomicExpression atomic = (AtomicExpression) expression;
+        final ScriptureToken literal = atomic.getLiteral();
+        assertNotNull(literal);
+        assertEquals(ScriptureTokenType.INTEGER_LITERAL, literal.getType());
+        assertEquals("1", literal.getLexeme());
     }
 
     public void testMultiplicativeExpression() throws Exception {

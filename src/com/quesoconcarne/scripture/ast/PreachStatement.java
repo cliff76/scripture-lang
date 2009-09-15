@@ -4,12 +4,12 @@ import com.quesoconcarne.scripture.parser.ScriptureToken;
 import java.util.ArrayList;
 import java.util.List;
 
-public class PrintStatement extends Statement {
+public class PreachStatement extends Statement {
 
     private ScriptureToken stream;
     private Expression expression;
 
-    public PrintStatement(ScriptureToken stream, Expression expression) {
+    public PreachStatement(ScriptureToken stream, Expression expression) {
         super();
         this.stream = stream;
         this.expression = expression;

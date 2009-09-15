@@ -4,12 +4,12 @@ import java.util.ArrayList;
 import java.util.List;
 import org.antlr.runtime.Token;
 
-public class PrintStatement extends Statement {
+public class PreachStatement extends Statement {
 
     private Token stream;
     private Expression expression;
 
-    public PrintStatement(Token stream, Expression expression) {
+    public PreachStatement(Token stream, Expression expression) {
         super();
         this.stream = stream;
         this.expression = expression;

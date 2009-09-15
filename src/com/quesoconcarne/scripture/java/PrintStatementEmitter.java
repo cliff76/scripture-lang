@@ -1,11 +1,11 @@
 package com.quesoconcarne.scripture.java;
 
 import com.quesoconcarne.scripture.Expression;
-import com.quesoconcarne.scripture.PrintStatement;
+import com.quesoconcarne.scripture.PreachStatement;
 
-public class PrintStatementEmitter implements Emitter<PrintStatement> {
+public class PrintStatementEmitter implements Emitter<PreachStatement> {
 
-    public void emit(PrintStatement print, EmitContext context) throws Exception {
+    public void emit(PreachStatement print, EmitContext context) throws Exception {
         final SourceChannel channel = context.getOutput().getCurrentSourceFile().getCurrentChannel();
 
         channel.append("System.out.println(");

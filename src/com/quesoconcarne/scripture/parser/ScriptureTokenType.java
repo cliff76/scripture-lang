@@ -40,6 +40,7 @@ public enum ScriptureTokenType {
     DELIMITER,
     EQUAL,
     DOT,
+    COMMA,
     SEMICOLON,
     LEFT_PARENTHESIS,
     RIGHT_PARENTHESIS,

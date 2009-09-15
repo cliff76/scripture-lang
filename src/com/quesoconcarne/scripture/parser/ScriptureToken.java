@@ -2,7 +2,7 @@ package com.quesoconcarne.scripture.parser;
 
 public class ScriptureToken {
     private ScriptureTokenType type;
-    private String text;
+    private String lexeme;
     private int line;
     private int character;
 
@@ -14,9 +14,9 @@ public class ScriptureToken {
         this(type, null, line, character);
     }
 
-    public ScriptureToken(ScriptureTokenType type, String text, int line, int character) {
+    public ScriptureToken(ScriptureTokenType type, String lexeme, int line, int character) {
         this.type = type;
-        this.text = text;
+        this.lexeme = lexeme;
         this.line = line;
         this.character = character;
     }
@@ -29,8 +29,8 @@ public class ScriptureToken {
         return line;
     }
 
-    public String getText() {
-        return text;
+    public String getLexeme() {
+        return lexeme;
     }
 
     public ScriptureTokenType getType() {

@@ -177,7 +177,7 @@ public abstract class LexerTest extends TestCase {
         while (tokenKeysIterator.hasNext()) {
             final String currentKey = tokenKeysIterator.next();
             final ScriptureToken currentToken = lexer.yylex();
-            final String currentLexeme = currentToken.getText();
+            final String currentLexeme = currentToken.getLexeme();
             if (currentLexeme != null) {
                 assertEquals(currentKey,currentLexeme);
             }
@@ -197,7 +197,7 @@ public abstract class LexerTest extends TestCase {
         ScriptureToken token = lexer.yylex();
         assertNotNull(token);
         assertEquals(type, token.getType());
-        assertEquals(lexeme, token.getText());
+        assertEquals(lexeme, token.getLexeme());
         assertEquals(0, token.getLine());
         assertEquals(0, token.getCharacter());
     }

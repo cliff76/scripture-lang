@@ -76,6 +76,14 @@ package com.quesoconcarne.scripture.parser;
   \\                             { stringLiteralBuffer.append('\\'); }
 }
 
+<YYINITIAL> [:] { return new ScriptureToken(ScriptureTokenType.DELIMITER, null, yyline, yychar); }
+<YYINITIAL> [=] { return new ScriptureToken(ScriptureTokenType.EQUAL, null, yyline, yychar); }
+<YYINITIAL> \.  { return new ScriptureToken(ScriptureTokenType.DOT, null, yyline, yychar); }
+<YYINITIAL> \(  { return new ScriptureToken(ScriptureTokenType.LEFT_PARENTHESIS, null, yyline, yychar); }
+<YYINITIAL> \)  { return new ScriptureToken(ScriptureTokenType.RIGHT_PARENTHESIS, null, yyline, yychar); }
+<YYINITIAL> \[  { return new ScriptureToken(ScriptureTokenType.LEFT_BRACKET, null, yyline, yychar); }
+<YYINITIAL> \]  { return new ScriptureToken(ScriptureTokenType.RIGHT_BRACKET, null, yyline, yychar); }
+
 <YYINITIAL> [+]                                   { return new ScriptureToken(ScriptureTokenType.ADDITION_OPERATOR, null, yyline, yychar); }
 <YYINITIAL> [-]                                   { return new ScriptureToken(ScriptureTokenType.SUBTRACTION_OPERATOR, null, yyline, yychar); }
 <YYINITIAL> [*]                                   { return new ScriptureToken(ScriptureTokenType.MULTIPLICATION_OPERATOR, null, yyline, yychar); }

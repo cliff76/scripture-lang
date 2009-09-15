@@ -1,0 +1,82 @@
+// ***************************************************************************
+// This file represents the formal LL(k) definition of the Scripture language.
+// ***************************************************************************
+
+program : domain_content+
+        | domain
+        ;
+
+domain : DOMAIN (IDENTIFIER ('@' IDENTIFIER)*) DELIMITER domain_content+ AMEN;
+
+domain_content : order
+               | prophecy
+               | commandment
+               | artifact
+               | statement
+               ;
+
+order :	ORDER IDENTIFIER (OF (CREATION|IDENTIFIER))? DELIMITER order_content* AMEN;
+
+order_content : prophecy
+              | commandment
+              | artifact
+              ;
+
+prophecy : PROFESS (GENESIS|expression) (ALIAS IDENTIFIER)? DELIMITER block* AMEN;
+
+block : (artifact | statement)*;
+
+commandment : COMMANDMENT IDENTIFIER DELIMITER block AMEN;
+
+artifact : ARTIFACT IDENTIFIER (EQUAL expression)? SEMICOLON;
+
+statement : expression_statement
+          | if_statement
+          | print_statement
+          | pray_statement
+          ;
+
+expression_statement : expression SEMICOLON;
+
+// TODO: Consider making the the 'if' an expression
+if_statement : IF expression DELIMITER block (ELSE block)? AMEN;
+
+print_statement : PREACH (IDENTIFIER ',')? expression SEMICOLON;
+
+pray_statement : PRAY expression SEMICOLON;
+
+expression : assignment_expression;
+
+assignment_expression : subtraction_expression (EQUAL subtraction_expression)?;
+
+subtraction_expression : addition_expression (SUBTRACTION_OPERATOR addition_expression)?;
+
+addition_expression : division_expression (ADDITION_OPERATOR division_expression)?;
+
+division_expression : multiplication_expression (DIVISION_OPERATOR multiplication_expression)?;
+
+multiplication_expression : boolean_expression (MULTIPLICATION_OPERATOR boolean_expression)?;
+
+boolean_expression : comparative_expression (boolean_operator comparative_expression)?
+                   | NOT comparative_expression
+                   ;
+
+boolean_operator : AND
+                 | OR
+                 | XOR
+                 ;
+
+comparative_expression : keypath_expression (COMPARATIVE_OPERATOR keypath_expression)?;
+
+keypath_expression : atomic_expression (DOT IDENTIFIER)?;
+
+atomic_expression : INTEGER_LITERAL
+                  | REAL_LITERAL
+                  | STRING_LITERAL
+                  | REGEXP_LITERAL
+                  | IDENTIFIER
+                  | TRUE
+                  | FALSE
+                  | CREATE IDENTIFIER
+                  | LEFT_PARENTHESIS expression RIGHT_PARENTHESIS
+                  ;

@@ -16,6 +16,7 @@ import com.quesoconcarne.scripture.ast.KeypathExpression;
 import com.quesoconcarne.scripture.ast.PrayStatement;
 import com.quesoconcarne.scripture.ast.PreachStatement;
 import com.quesoconcarne.scripture.ast.Program;
+import com.quesoconcarne.scripture.ast.Prophecy;
 import com.quesoconcarne.scripture.ast.Statement;
 import java.io.IOException;
 import java.io.StringReader;
@@ -42,6 +43,21 @@ public class ScriptureParserTest extends TestCase {
         final List blockContents = domain.getBlockContents();
         assertNotNull(blockContents);
         assertEquals(0, blockContents.size());
+    }
+
+    public void testProphecy() throws Exception {
+        final ScriptureParser parser = createParser("prophecy genesis alias foo: preach \"Hello World\"; amen");
+        final Prophecy prophecy = parser.getProphecy();
+        assertNotNull(prophecy);
+        final ScriptureToken genesis = prophecy.getGenesis();
+        assertNotNull(genesis);
+        assertEquals(ScriptureTokenType.GENESIS, genesis.getType());
+        final ScriptureToken alias = prophecy.getAlias();
+        assertNotNull(alias);
+        assertEquals("foo", alias.getLexeme());
+        final Block block = prophecy.getBlock();
+        assertNotNull(block);
+        assertEquals(1, block.getChildren().size());
     }
 
     public void testCommandment() throws Exception {

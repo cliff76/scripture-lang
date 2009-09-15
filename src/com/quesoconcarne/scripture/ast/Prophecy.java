@@ -9,30 +9,22 @@ public class Prophecy extends Node {
     private ScriptureToken genesis;
     private Expression expression;
     private ScriptureToken alias;
-    private List<Node> blockContents;
+    private Block block;
 
-    Prophecy(ScriptureToken genesis, Expression expression, ScriptureToken alias, List<Node> blockContents) {
+    public Prophecy(ScriptureToken genesis, Expression expression, ScriptureToken alias, Block block) {
         super();
         this.genesis = genesis;
         this.expression = expression;
         this.alias = alias;
-        this.blockContents = blockContents;
+        this.block = block;
     }
 
     @Override
     public List<? extends Node> getChildren() {
         List<Node> result = new ArrayList<Node>();
         result.add(expression);
-        result.addAll(blockContents);
+        result.add(block);
         return result;
-    }
-
-    public ScriptureToken getAlias() {
-        return alias;
-    }
-
-    public List<Node> getBlockContents() {
-        return blockContents;
     }
 
     public Expression getExpression() {
@@ -41,6 +33,14 @@ public class Prophecy extends Node {
 
     public ScriptureToken getGenesis() {
         return genesis;
+    }
+
+    public ScriptureToken getAlias() {
+        return alias;
+    }
+
+    public Block getBlock() {
+        return block;
     }
 
 }

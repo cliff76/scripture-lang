@@ -22,7 +22,7 @@ order_content : prophecy
               | artifact
               ;
 
-prophecy : PROFESS (GENESIS|expression) (ALIAS IDENTIFIER)? DELIMITER block* AMEN;
+prophecy : PROFESS (GENESIS|expression) (ALIAS IDENTIFIER)? DELIMITER block AMEN;
 
 block : (artifact | statement)*;
 

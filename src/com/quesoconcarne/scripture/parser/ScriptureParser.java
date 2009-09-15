@@ -18,6 +18,7 @@ import com.quesoconcarne.scripture.ast.Node;
 import com.quesoconcarne.scripture.ast.PrayStatement;
 import com.quesoconcarne.scripture.ast.PreachStatement;
 import com.quesoconcarne.scripture.ast.Program;
+import com.quesoconcarne.scripture.ast.Prophecy;
 import com.quesoconcarne.scripture.ast.Statement;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -123,6 +124,67 @@ public class ScriptureParser {
 
     public Node getDomainContent() {
         return null;
+    }
+
+    public Prophecy getProphecy() throws IOException {
+        final ScriptureToken prophecy = lookAhead(1);
+        switch (prophecy.getType()) {
+            case PROPHECY:
+                consumeToken();
+                final ScriptureToken genesis = lookAhead(1);
+                Expression expression = null;
+                switch (genesis.getType()) {
+                    case GENESIS:
+                        consumeToken();
+                        break;
+                    default:
+                        expression = getExpression();
+                        if (expression == null) {
+                            validationResult.appendError("Expecting genesis or expression after: " + prophecy.getLexeme());
+                            return null;
+                        }
+                        break;
+                }
+                final ScriptureToken alias = lookAhead(1);
+                ScriptureToken name = null;
+                switch (alias.getType()) {
+                    case ALIAS:
+                        consumeToken();
+                        name = lookAhead(1);
+                        switch (name.getType()) {
+                            case IDENTIFIER:
+                                consumeToken();
+                                break;
+                            default:
+                                validationResult.appendError("Expecting identifier but got: " + name.getLexeme());
+                                return null;
+                        }
+                    default:
+                        break;
+                }
+                final ScriptureToken delim = lookAhead(1);
+                switch (delim.getType()) {
+                    case DELIMITER:
+                        consumeToken();
+                        break;
+                    default:
+                        validationResult.appendError("Expecting ; but got: " + delim.getLexeme());
+                        return null;
+                }
+                final Block block = getBlock();
+                final ScriptureToken amen = lookAhead(1);
+                switch (amen.getType()) {
+                    case AMEN:
+                        consumeToken();
+                        break;
+                    default:
+                        validationResult.appendError("Expecting amen but got: " + amen.getLexeme());
+                        return null;
+                }
+                return new Prophecy(genesis, expression, name, block);
+            default:
+                return null;
+        }
     }
 
     public Commandment getCommandment() throws IOException {

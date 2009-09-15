@@ -88,7 +88,7 @@ public class ScriptureParser {
                 nameSegments.add(nameToken);
                 break;
             default:
-                validationResult.appendError("Expecting identifier but got: " + nameToken.getLexeme());
+                validationResult.appendUnexpectedTokenError(ScriptureTokenType.IDENTIFIER, nameToken);
                 return null;
         }
         
@@ -100,7 +100,7 @@ public class ScriptureParser {
                 consumeToken();
                 break;
             default:
-                validationResult.appendError("Expecting ':' but got: " + delimiterToken.getLexeme());
+                validationResult.appendUnexpectedTokenError(ScriptureTokenType.DELIMITER, delimiterToken);
                 return null;
         }
 
@@ -110,7 +110,7 @@ public class ScriptureParser {
                 consumeToken();
                 break;
             default:
-                validationResult.appendError("Expecting closer but got: " + amenToken.getLexeme());
+                validationResult.appendUnexpectedTokenError(ScriptureTokenType.AMEN, amenToken);
                 return null;
         }
 
@@ -168,7 +168,7 @@ public class ScriptureParser {
                 consumeToken();
                 break;
             default:
-                validationResult.appendError("Expecting identifier but got: " + name.getLexeme());
+                validationResult.appendUnexpectedTokenError(ScriptureTokenType.IDENTIFIER, name);
                 return null;
         }
         final ScriptureToken of = lookAhead(1);
@@ -182,7 +182,7 @@ public class ScriptureParser {
                         consumeToken();
                         break;
                     default:
-                        validationResult.appendError("Expecting identifier but got: " + parent.getLexeme());
+                        validationResult.appendUnexpectedTokenError(ScriptureTokenType.IDENTIFIER, parent);
                         return null;
                 }
             default:
@@ -194,7 +194,7 @@ public class ScriptureParser {
                 consumeToken();
                 break;
             default:
-                validationResult.appendError("Expecting : but got: " + delim.getLexeme());
+                validationResult.appendUnexpectedTokenError(ScriptureTokenType.DELIMITER, delim);
                 return null;
         }
         final OrderContent content = getOrderContent();
@@ -204,7 +204,7 @@ public class ScriptureParser {
                 consumeToken();
                 break;
             default:
-                validationResult.appendError("Expecting amen but got: " + amen.getLexeme());
+                validationResult.appendUnexpectedTokenError(ScriptureTokenType.AMEN, amen);
                 return null;
         }
         return new Order(name, parent, content);
@@ -250,7 +250,7 @@ public class ScriptureParser {
                     default:
                         expression = getExpression();
                         if (expression == null) {
-                            validationResult.appendError("Expecting genesis or expression after: " + prophecy.getLexeme());
+                            validationResult.appendUnexpectedTokenError(ScriptureTokenType.GENESIS, prophecy);
                             return null;
                         }
                         break;
@@ -266,7 +266,7 @@ public class ScriptureParser {
                                 consumeToken();
                                 break;
                             default:
-                                validationResult.appendError("Expecting identifier but got: " + name.getLexeme());
+                                validationResult.appendUnexpectedTokenError(ScriptureTokenType.IDENTIFIER, name);
                                 return null;
                         }
                     default:
@@ -278,7 +278,7 @@ public class ScriptureParser {
                         consumeToken();
                         break;
                     default:
-                        validationResult.appendError("Expecting ; but got: " + delim.getLexeme());
+                        validationResult.appendUnexpectedTokenError(ScriptureTokenType.DELIMITER, delim);
                         return null;
                 }
                 final Block block = getBlock();
@@ -288,7 +288,7 @@ public class ScriptureParser {
                         consumeToken();
                         break;
                     default:
-                        validationResult.appendError("Expecting amen but got: " + amen.getLexeme());
+                        validationResult.appendUnexpectedTokenError(ScriptureTokenType.AMEN, amen);
                         return null;
                 }
                 return new Prophecy(genesis, expression, name, block);
@@ -308,7 +308,7 @@ public class ScriptureParser {
                         consumeToken();
                         break;
                     default:
-                        validationResult.appendError("Expecting identifier but got: " + name.getLexeme());
+                        validationResult.appendUnexpectedTokenError(ScriptureTokenType.IDENTIFIER, name);
                         return null;
                 }
                 final ScriptureToken delimiter = lookAhead(1);
@@ -317,7 +317,7 @@ public class ScriptureParser {
                         consumeToken();
                         break;
                     default:
-                        validationResult.appendError("Expecting ; but got: " + delimiter.getLexeme());
+                        validationResult.appendUnexpectedTokenError(ScriptureTokenType.DELIMITER, delimiter);
                         return null;
                 }
                 final Block block = getBlock();
@@ -327,7 +327,7 @@ public class ScriptureParser {
                         consumeToken();
                         return new Commandment(name, block);
                     default:
-                        validationResult.appendError("Expecting amen but got: " + amen.getLexeme());
+                        validationResult.appendUnexpectedTokenError(ScriptureTokenType.AMEN, amen);
                         return null;
                 }
             default:
@@ -368,7 +368,7 @@ public class ScriptureParser {
                         consumeToken();
                         break;
                     default:
-                        validationResult.appendError("Expecting identifier but got: " + name.getLexeme());
+                        validationResult.appendUnexpectedTokenError(ScriptureTokenType.IDENTIFIER, name);
                         return null;
                 }
                 final ScriptureToken semiOrEquals = lookAhead(1);
@@ -380,7 +380,7 @@ public class ScriptureParser {
                         consumeToken();
                         final Expression expr = getExpression();
                         if (expr == null) {
-                            validationResult.appendError("Expecting expression after: " + token.getLexeme());
+                            validationResult.appendUnexpectedTokenError(ScriptureTokenType.EQUAL, token);
                             return null;
                         }
                         final ScriptureToken semi = lookAhead(1);
@@ -389,11 +389,11 @@ public class ScriptureParser {
                                 consumeToken();
                                 return new Artifact(name, expr);
                             default:
-                                validationResult.appendError("Expecting ; but got: " + name.getLexeme());
+                                validationResult.appendUnexpectedTokenError(ScriptureTokenType.SEMICOLON, name);
                                 return null;
                         }
                     default:
-                        validationResult.appendError("Expecting ; or = but got: " + name.getLexeme());
+                        validationResult.appendUnexpectedTokenError(new ScriptureTokenType[] {ScriptureTokenType.SEMICOLON, ScriptureTokenType.EQUAL}, name);
                         return null;
                 }
             default:
@@ -429,7 +429,7 @@ public class ScriptureParser {
                 consumeToken();
                 final Expression expr = getExpression();
                 if (expr == null) {
-                    validationResult.appendError("Expecting expression after: " + token.getLexeme());
+                    validationResult.appendExpectingRule(Expression.class, token);
                     return null;
                 }
                 final ScriptureToken delim = lookAhead(1);
@@ -453,11 +453,11 @@ public class ScriptureParser {
                                 consumeToken();
                                 return new IfStatement(expr, ifBlock, elseBlock);
                             default:
-                                validationResult.appendError("Expecting amen but got: " + amen.getLexeme());
+                                validationResult.appendUnexpectedTokenError(ScriptureTokenType.AMEN, amen);
                                 return null;
                         }
                     default:
-                        validationResult.appendError("Expecting : but got: " + delim.getLexeme());
+                        validationResult.appendUnexpectedTokenError(ScriptureTokenType.DELIMITER, delim);
                         return null;
                 }
             default:
@@ -476,7 +476,7 @@ public class ScriptureParser {
                 consumeToken();
                 return new ExpressionStatement(expr);
             default:
-                validationResult.appendError("Expecting ; but got: " + token.getLexeme());
+                validationResult.appendUnexpectedTokenError(ScriptureTokenType.SEMICOLON, token);
                 return null;
         }
     }
@@ -506,7 +506,7 @@ public class ScriptureParser {
                 }
                 final Expression expr = getExpression();
                 if (expr == null) {
-                    validationResult.appendError("Expecting expression after: " + token.getLexeme());
+                    validationResult.appendExpectingRule(Expression.class, token);
                     return null;
                 }
                 final ScriptureToken semi = lookAhead(1);
@@ -520,7 +520,7 @@ public class ScriptureParser {
                             return new PreachStatement(null, expr);
                         }
                     default:
-                        validationResult.appendError("Expecting ; but got: " + token.getLexeme());
+                        validationResult.appendUnexpectedTokenError(ScriptureTokenType.SEMICOLON, token);
                         return null;
                 }
             default:
@@ -536,7 +536,7 @@ public class ScriptureParser {
                 consumeToken();
                 final Expression expr = getExpression();
                 if (expr == null) {
-                    validationResult.appendError("Expecting expression after: " + token.getLexeme());
+                    validationResult.appendExpectingRule(Expression.class, token);
                     return null;
                 }
                 final ScriptureToken semi = lookAhead(1);
@@ -545,7 +545,7 @@ public class ScriptureParser {
                         consumeToken();
                         return new PrayStatement(expr);
                     default:
-                        validationResult.appendError("Expecting ; but got: " + semi.getLexeme());
+                        validationResult.appendUnexpectedTokenError(ScriptureTokenType.SEMICOLON, semi);
                 }
             default:
                 return null;
@@ -567,7 +567,7 @@ public class ScriptureParser {
                 consumeToken();
                 final Expression right = getSubtractiveExpression();
                 if (right == null) {
-                    validationResult.appendError("Expecting expression after: " + token.getLexeme());
+                    validationResult.appendExpectingRule(Expression.class, token);
                 }
                 return new AssignmentExpression(left, token, right);
             default:
@@ -586,7 +586,7 @@ public class ScriptureParser {
                 consumeToken();
                 final Expression right = getAdditiveExpression();
                 if (right == null) {
-                    validationResult.appendError("Expecting expression after: " + token.getLexeme());
+                    validationResult.appendExpectingRule(Expression.class, token);
                 }
                 return new ArithmeticExpression(left, token, right);
             default:
@@ -605,7 +605,7 @@ public class ScriptureParser {
                 consumeToken();
                 final Expression right = getDivisiveExpression();
                 if (right == null) {
-                    validationResult.appendError("Expecting expression after: " + token.getLexeme());
+                    validationResult.appendExpectingRule(Expression.class, token);
                 }
                 return new ArithmeticExpression(left, token, right);
             default:
@@ -624,7 +624,7 @@ public class ScriptureParser {
                 consumeToken();
                 final Expression right = getMultiplicativeExpression();
                 if (right == null) {
-                    validationResult.appendError("Expecting expression after: " + token.getLexeme());
+                    validationResult.appendExpectingRule(Expression.class, token);
                 }
                 return new ArithmeticExpression(left, token, right);
             default:
@@ -643,7 +643,7 @@ public class ScriptureParser {
                 consumeToken();
                 final Expression right = getBooleanExpression();
                 if (right == null) {
-                    validationResult.appendError("Expecting expression after: " + token.getLexeme());
+                    validationResult.appendExpectingRule(Expression.class, token);
                 }
                 return new ArithmeticExpression(left, token, right);
             default:
@@ -658,7 +658,7 @@ public class ScriptureParser {
                 consumeToken();
                 final Expression negatedExpression = getComparativeExpression();
                 if (negatedExpression == null) {
-                    validationResult.appendError("Expecting expression after: " + booleanOpeartorToken.getLexeme());
+                    validationResult.appendExpectingRule(Expression.class, booleanOpeartorToken);
                     return null;
                 }
                 return new BooleanExpression(booleanOpeartorToken, negatedExpression);
@@ -675,7 +675,7 @@ public class ScriptureParser {
                         consumeToken();
                         final Expression right = getComparativeExpression();
                         if (right == null) {
-                            validationResult.appendError("Expecting expression after: " + token.getLexeme());
+                            validationResult.appendExpectingRule(Expression.class, token);
                             return null;
                         }
                         return new BooleanExpression(left, token, right);
@@ -696,7 +696,7 @@ public class ScriptureParser {
                 consumeToken();
                 final Expression keypathExpression = getKeypathExpression();
                 if (keypathExpression == null) {
-                    validationResult.appendError("Expecting expression after: " + operatorToken.getLexeme());
+                    validationResult.appendExpectingRule(Expression.class, operatorToken);
                     return null;
                 }
                 return new ComparativeExpression(expression, operatorToken, keypathExpression);
@@ -720,7 +720,7 @@ public class ScriptureParser {
                         consumeToken();
                         return new KeypathExpression(expression, dotToken, identifierToken);
                     default:
-                        validationResult.appendError("Expecting identifier but got: " + identifierToken.getLexeme());
+                        validationResult.appendUnexpectedTokenError(ScriptureTokenType.IDENTIFIER, identifierToken);
                         return null;
                 }
             default:
@@ -752,14 +752,14 @@ public class ScriptureParser {
                         consumeToken();
                         return new CreateExpression(identifierToken);
                     default:
-                        validationResult.appendError("Expecting identifier but got: " + token.getLexeme());
+                        validationResult.appendUnexpectedTokenError(ScriptureTokenType.IDENTIFIER, token);
                         return null;
                 }
             case LEFT_PARENTHESIS:
                 consumeToken();
                 final Expression expression = getExpression();
                 if (expression == null) {
-                    validationResult.appendError("Expecting expression after " + token.getLexeme());
+                    validationResult.appendUnexpectedTokenError(ScriptureTokenType.LEFT_PARENTHESIS, token);
                     return null;
                 }
                 final ScriptureToken rightParenthesis = lookAhead(1);
@@ -768,12 +768,12 @@ public class ScriptureParser {
                         consumeToken();
                         return expression;
                     default:
-                        validationResult.appendError("Expecting right parenthesis but got: " + token.getLexeme());
+                        validationResult.appendUnexpectedTokenError(ScriptureTokenType.RIGHT_PARENTHESIS, token);
                         return null;
                 }
                 
             default:
-                validationResult.appendError("Expecting boolean literal but got: " + token.getLexeme());
+                validationResult.appendUnexpectedTokenError(ScriptureTokenType.BOOLEAN, token);
                 return null;
         }
     }

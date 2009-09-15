@@ -5,6 +5,7 @@ import com.quesoconcarne.scripture.ast.AssignmentExpression;
 import com.quesoconcarne.scripture.ast.Block;
 import com.quesoconcarne.scripture.ast.BooleanExpression;
 import com.quesoconcarne.scripture.ast.AtomicExpression;
+import com.quesoconcarne.scripture.ast.Commandment;
 import com.quesoconcarne.scripture.ast.ComparativeExpression;
 import com.quesoconcarne.scripture.ast.CreateExpression;
 import com.quesoconcarne.scripture.ast.Domain;
@@ -41,6 +42,18 @@ public class ScriptureParserTest extends TestCase {
         final List blockContents = domain.getBlockContents();
         assertNotNull(blockContents);
         assertEquals(0, blockContents.size());
+    }
+
+    public void testCommandment() throws Exception {
+        final ScriptureParser parser = createParser("commandment foo : preach \"Hello World\"; amen");
+        final Commandment commandment = parser.getCommandment();
+        assertNotNull(commandment);
+        final ScriptureToken name = commandment.getName();
+        assertNotNull(name);
+        assertEquals("foo", name.getLexeme());
+        final Block block = commandment.getBlock();
+        assertNotNull(block);
+        assertEquals(1, block.getChildren().size());
     }
 
     public void testArtifact() throws Exception {

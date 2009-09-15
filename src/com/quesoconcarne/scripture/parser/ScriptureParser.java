@@ -6,6 +6,7 @@ import com.quesoconcarne.scripture.ast.AssignmentExpression;
 import com.quesoconcarne.scripture.ast.AtomicExpression;
 import com.quesoconcarne.scripture.ast.Block;
 import com.quesoconcarne.scripture.ast.BooleanExpression;
+import com.quesoconcarne.scripture.ast.Commandment;
 import com.quesoconcarne.scripture.ast.ComparativeExpression;
 import com.quesoconcarne.scripture.ast.CreateExpression;
 import com.quesoconcarne.scripture.ast.Domain;
@@ -102,7 +103,7 @@ public class ScriptureParser {
                 consumeToken();
                 break;
             default:
-                validationResult.appendError("Expecting ':' but got: " + nameToken.getLexeme());
+                validationResult.appendError("Expecting ':' but got: " + delimiterToken.getLexeme());
                 return null;
         }
 
@@ -112,7 +113,7 @@ public class ScriptureParser {
                 consumeToken();
                 break;
             default:
-                validationResult.appendError("Expecting closer but got: " + nameToken.getLexeme());
+                validationResult.appendError("Expecting closer but got: " + amenToken.getLexeme());
                 return null;
         }
 
@@ -122,6 +123,44 @@ public class ScriptureParser {
 
     public Node getDomainContent() {
         return null;
+    }
+
+    public Commandment getCommandment() throws IOException {
+        final ScriptureToken commandment = lookAhead(1);
+        switch (commandment.getType()) {
+            case COMMANDMENT:
+                consumeToken();
+                final ScriptureToken name = lookAhead(1);
+                switch (name.getType()) {
+                    case IDENTIFIER:
+                        consumeToken();
+                        break;
+                    default:
+                        validationResult.appendError("Expecting identifier but got: " + name.getLexeme());
+                        return null;
+                }
+                final ScriptureToken delimiter = lookAhead(1);
+                switch (delimiter.getType()) {
+                    case DELIMITER:
+                        consumeToken();
+                        break;
+                    default:
+                        validationResult.appendError("Expecting ; but got: " + delimiter.getLexeme());
+                        return null;
+                }
+                final Block block = getBlock();
+                final ScriptureToken amen = lookAhead(1);
+                switch (amen.getType()) {
+                    case AMEN:
+                        consumeToken();
+                        return new Commandment(name, block);
+                    default:
+                        validationResult.appendError("Expecting amen but got: " + amen.getLexeme());
+                        return null;
+                }
+            default:
+                return null;
+        }
     }
 
     public Block getBlock() throws IOException {

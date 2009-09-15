@@ -6,25 +6,25 @@ import java.util.List;
 public class Commandment extends Node {
 
     private ScriptureToken name;
-    private List<Node> blockContents;
+    private Block block;
 
-    Commandment(ScriptureToken name, List<Node> blockContents) {
+    public Commandment(ScriptureToken name, Block block) {
         super();
         this.name = name;
-        this.blockContents = blockContents;
+        this.block = block;
     }
 
     @Override
     public List<? extends Node> getChildren() {
-        return blockContents;
-    }
-
-    public List<Node> getBlockContents() {
-        return blockContents;
+        return block.getChildren();
     }
 
     public ScriptureToken getName() {
         return name;
+    }
+
+    public Block getBlock() {
+        return block;
     }
 
 }

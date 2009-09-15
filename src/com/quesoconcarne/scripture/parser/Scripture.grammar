@@ -2,29 +2,31 @@
 // This file represents the formal LL(k) definition of the Scripture language.
 // ***************************************************************************
 
-program : domain_content+
+program : domain_content
         | domain
         ;
 
-domain : DOMAIN (IDENTIFIER ('@' IDENTIFIER)*) DELIMITER domain_content+ AMEN;
+domain : DOMAIN (IDENTIFIER ('@' IDENTIFIER)*) DELIMITER domain_content AMEN;
 
-domain_content : order
+domain_content : (order
                | prophecy
                | commandment
                | artifact
-               | statement
+               | statement)+
                ;
 
-order :	ORDER IDENTIFIER (OF (CREATION|IDENTIFIER))? DELIMITER order_content* AMEN;
+order :	ORDER IDENTIFIER (OF (CREATION|IDENTIFIER))? DELIMITER order_content AMEN;
 
-order_content : prophecy
+order_content : (prophecy
               | commandment
-              | artifact
+              | artifact)*
               ;
 
 prophecy : PROFESS (GENESIS|expression) (ALIAS IDENTIFIER)? DELIMITER block AMEN;
 
-block : (artifact | statement)*;
+block : (artifact
+      | statement)*
+      ;
 
 commandment : COMMANDMENT IDENTIFIER DELIMITER block AMEN;
 

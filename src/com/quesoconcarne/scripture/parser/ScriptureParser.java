@@ -15,6 +15,8 @@ import com.quesoconcarne.scripture.ast.ExpressionStatement;
 import com.quesoconcarne.scripture.ast.IfStatement;
 import com.quesoconcarne.scripture.ast.KeypathExpression;
 import com.quesoconcarne.scripture.ast.Node;
+import com.quesoconcarne.scripture.ast.Order;
+import com.quesoconcarne.scripture.ast.OrderContent;
 import com.quesoconcarne.scripture.ast.PrayStatement;
 import com.quesoconcarne.scripture.ast.PreachStatement;
 import com.quesoconcarne.scripture.ast.Program;
@@ -123,6 +125,89 @@ public class ScriptureParser {
     }
 
     public Node getDomainContent() {
+        return null;
+    }
+
+    public Order getOrder() throws IOException {
+        final ScriptureToken order = lookAhead(1);
+        switch (order.getType()) {
+            case ORDER:
+                consumeToken();
+                break;
+            default:
+                return null;
+        }
+        final ScriptureToken name = lookAhead(1);
+        switch (name.getType()) {
+            case IDENTIFIER:
+                consumeToken();
+                break;
+            default:
+                validationResult.appendError("Expecting identifier but got: " + name.getLexeme());
+                return null;
+        }
+        final ScriptureToken of = lookAhead(1);
+        ScriptureToken parent = null;
+        switch (of.getType()) {
+            case OF:
+                consumeToken();
+                parent = lookAhead(1);
+                switch (parent.getType()) {
+                    case IDENTIFIER:
+                        consumeToken();
+                        break;
+                    default:
+                        validationResult.appendError("Expecting identifier but got: " + parent.getLexeme());
+                        return null;
+                }
+            default:
+                break;
+        }
+        final ScriptureToken delim = lookAhead(1);
+        switch (delim.getType()) {
+            case DELIMITER:
+                consumeToken();
+                break;
+            default:
+                validationResult.appendError("Expecting : but got: " + delim.getLexeme());
+                return null;
+        }
+        final OrderContent content = getOrderContent();
+        final ScriptureToken amen = lookAhead(1);
+        switch (amen.getType()) {
+            case AMEN:
+                consumeToken();
+                break;
+            default:
+                validationResult.appendError("Expecting amen but got: " + amen.getLexeme());
+                return null;
+        }
+        return new Order(name, parent, content);
+    }
+
+    public OrderContent getOrderContent() throws IOException {
+        List<Node> nodes = new ArrayList();
+        Node currentNode = getOrderContentNode();
+        while (currentNode != null) {
+            nodes.add(currentNode);
+            currentNode = getOrderContentNode();
+        }
+        return new OrderContent(nodes);
+    }
+
+    public Node getOrderContentNode() throws IOException {
+        final Prophecy prophecy = getProphecy();
+        if (prophecy != null) {
+            return prophecy;
+        }
+        final Commandment commandment = getCommandment();
+        if (commandment != null) {
+            return commandment;
+        }
+        final Artifact artifact = getArtifact();
+        if (artifact != null) {
+            return artifact;
+        }
         return null;
     }
 

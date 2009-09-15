@@ -13,6 +13,8 @@ import com.quesoconcarne.scripture.ast.Expression;
 import com.quesoconcarne.scripture.ast.ExpressionStatement;
 import com.quesoconcarne.scripture.ast.IfStatement;
 import com.quesoconcarne.scripture.ast.KeypathExpression;
+import com.quesoconcarne.scripture.ast.Order;
+import com.quesoconcarne.scripture.ast.OrderContent;
 import com.quesoconcarne.scripture.ast.PrayStatement;
 import com.quesoconcarne.scripture.ast.PreachStatement;
 import com.quesoconcarne.scripture.ast.Program;
@@ -43,6 +45,24 @@ public class ScriptureParserTest extends TestCase {
         final List blockContents = domain.getBlockContents();
         assertNotNull(blockContents);
         assertEquals(0, blockContents.size());
+    }
+
+    public void testOrder() throws Exception {
+        final ScriptureParser parser = createParser("order Apple of Fruit: artifact worm; amen");
+        final Order order = parser.getOrder();
+        assertNotNull(order);
+        
+        final ScriptureToken name = order.getName();
+        assertNotNull(name);
+        assertEquals("Apple", name.getLexeme());
+
+        final ScriptureToken parent = order.getParentname();
+        assertNotNull(parent);
+        assertEquals("Fruit", parent.getLexeme());
+
+        final OrderContent content = order.getContent();
+        assertNotNull(content);
+        assertEquals(1, content.getChildren().size());
     }
 
     public void testProphecy() throws Exception {

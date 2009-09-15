@@ -7,22 +7,22 @@ public class Order extends Node {
 
     private ScriptureToken name;
     private ScriptureToken parentname;
-    private List<Node> blockContents;
+    private OrderContent content;
 
-    Order(ScriptureToken name, ScriptureToken parentname, List<Node> blockContents) {
+    public Order(ScriptureToken name, ScriptureToken parentname, OrderContent content) {
         super();
         this.name = name;
         this.parentname = parentname;
-        this.blockContents = blockContents;
+        this.content = content;
     }
 
     @Override
     public List<? extends Node> getChildren() {
-        return blockContents;
+        return content.getChildren();
     }
 
-    public List<Node> getBlockContents() {
-        return blockContents;
+    public OrderContent getContent() {
+        return content;
     }
 
     public ScriptureToken getName() {

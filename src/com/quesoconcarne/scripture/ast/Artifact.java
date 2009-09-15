@@ -9,11 +9,11 @@ public class Artifact extends Node {
     private ScriptureToken name;
     private Expression value;
 
-    Artifact(ScriptureToken name) {
+    public Artifact(ScriptureToken name) {
         this(name, null);
     }
 
-    Artifact(ScriptureToken name, Expression value) {
+    public Artifact(ScriptureToken name, Expression value) {
         super();
         this.name = name;
         this.value = value;

@@ -1,5 +1,6 @@
 package com.quesoconcarne.scripture.parser;
 
+import com.quesoconcarne.scripture.ast.Artifact;
 import com.quesoconcarne.scripture.ast.AssignmentExpression;
 import com.quesoconcarne.scripture.ast.Block;
 import com.quesoconcarne.scripture.ast.BooleanExpression;
@@ -40,6 +41,35 @@ public class ScriptureParserTest extends TestCase {
         final List blockContents = domain.getBlockContents();
         assertNotNull(blockContents);
         assertEquals(0, blockContents.size());
+    }
+
+    public void testArtifact() throws Exception {
+        testArtifact("foo", "1", "artifact foo = 1;");
+        testArtifact("foo", null, "artifact foo;");
+    }
+    
+    public void testArtifact(String nameString, String valueString, String code) throws Exception {
+        final ScriptureParser parser = createParser(code);
+        final Artifact artifact = parser.getArtifact();
+        assertNotNull(artifact);
+        final ScriptureToken name = artifact.getName();
+        assertNotNull(name);
+        assertEquals(ScriptureTokenType.IDENTIFIER, name.getType());
+        assertEquals(nameString, name.getLexeme());
+        
+        final Expression value = artifact.getValue();
+        if (valueString == null) {
+            assertNull(value);
+        }
+        else {
+            assertEquals(AtomicExpression.class, value.getClass());
+            final AtomicExpression atomic = (AtomicExpression) value;
+            final ScriptureToken literal = atomic.getLiteral();
+            assertNotNull(literal);
+            assertEquals(ScriptureTokenType.INTEGER_LITERAL, literal.getType());
+            assertEquals(valueString, literal.getLexeme());
+        }
+        
     }
 
     public void testIfStatement() throws Exception {

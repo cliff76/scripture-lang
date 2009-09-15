@@ -1,6 +1,7 @@
 package com.quesoconcarne.scripture.parser;
 
 import com.quesoconcarne.scripture.ast.ArithmeticExpression;
+import com.quesoconcarne.scripture.ast.Artifact;
 import com.quesoconcarne.scripture.ast.AssignmentExpression;
 import com.quesoconcarne.scripture.ast.AtomicExpression;
 import com.quesoconcarne.scripture.ast.Block;
@@ -123,7 +124,73 @@ public class ScriptureParser {
         return null;
     }
 
-    public Statement getStatement() throws Exception {
+    public Block getBlock() throws IOException {
+        List<Node> nodes = new ArrayList();
+        Node currentNode = getBlockNode();
+        while (currentNode != null) {
+            nodes.add(currentNode);
+            currentNode = getBlockNode();
+        }
+        return new Block(nodes);
+    }
+
+    private Node getBlockNode() throws IOException {
+        final Statement statement = getStatement();
+        if (statement != null) {
+            return statement;
+        }
+        final Artifact artifact = getArtifact();
+        if (artifact != null) {
+            return artifact;
+        }
+        return null;
+    }
+
+    public Artifact getArtifact() throws IOException {
+        final ScriptureToken token = lookAhead(1);
+        switch (token.getType()) {
+            case ARTIFACT:
+                consumeToken();
+                final ScriptureToken name = lookAhead(1);
+                switch (name.getType()) {
+                    case IDENTIFIER:
+                        consumeToken();
+                        break;
+                    default:
+                        validationResult.appendError("Expecting identifier but got: " + name.getLexeme());
+                        return null;
+                }
+                final ScriptureToken semiOrEquals = lookAhead(1);
+                switch (semiOrEquals.getType()) {
+                    case SEMICOLON:
+                        consumeToken();
+                        return new Artifact(name);
+                    case EQUAL:
+                        consumeToken();
+                        final Expression expr = getExpression();
+                        if (expr == null) {
+                            validationResult.appendError("Expecting expression after: " + token.getLexeme());
+                            return null;
+                        }
+                        final ScriptureToken semi = lookAhead(1);
+                        switch (semi.getType()) {
+                            case SEMICOLON:
+                                consumeToken();
+                                return new Artifact(name, expr);
+                            default:
+                                validationResult.appendError("Expecting ; but got: " + name.getLexeme());
+                                return null;
+                        }
+                    default:
+                        validationResult.appendError("Expecting ; or = but got: " + name.getLexeme());
+                        return null;
+                }
+            default:
+                return null;
+        }
+    }
+
+    public Statement getStatement() throws IOException {
         final Statement expr = getExpressionStatement();
         if (expr != null) {
             return expr;
@@ -144,17 +211,7 @@ public class ScriptureParser {
         return null;
     }
 
-    public Block getBlock() throws Exception {
-        List<Node> nodes = new ArrayList();
-        Node currentNode = getStatement();
-        while (currentNode != null) {
-            nodes.add(currentNode);
-            currentNode = getStatement();
-        }
-        return new Block(nodes);
-    }
-
-    public Statement getIfStatement() throws Exception {
+    public Statement getIfStatement() throws IOException {
         final ScriptureToken token = lookAhead(1);
         switch (token.getType()) {
             case IF:
@@ -197,7 +254,7 @@ public class ScriptureParser {
         }
     }
 
-    public Statement getExpressionStatement() throws Exception {
+    public Statement getExpressionStatement() throws IOException {
         final Expression expr = getExpression();
         if (expr == null) {
             return null;
@@ -213,7 +270,7 @@ public class ScriptureParser {
         }
     }
 
-    public Statement getPreachStatement() throws Exception {
+    public Statement getPreachStatement() throws IOException {
         final ScriptureToken token = lookAhead(1);
         switch (token.getType()) {
             case PREACH:
@@ -261,7 +318,7 @@ public class ScriptureParser {
         }
     }
 
-    public Statement getPrayStatement() throws Exception {
+    public Statement getPrayStatement() throws IOException {
         final ScriptureToken token = lookAhead(1);
         switch (token.getType()) {
             case PRAY:
@@ -284,11 +341,11 @@ public class ScriptureParser {
         }
     }
 
-    public Expression getExpression() throws Exception {
+    public Expression getExpression() throws IOException {
         return getAssignmentExpression();
     }
 
-    public Expression getAssignmentExpression() throws Exception {
+    public Expression getAssignmentExpression() throws IOException {
         final Expression left = getSubtractiveExpression();
         if (left == null) {
             return null;
@@ -307,7 +364,7 @@ public class ScriptureParser {
         }
     }
 
-    public Expression getSubtractiveExpression() throws Exception {
+    public Expression getSubtractiveExpression() throws IOException {
         final Expression left = getAdditiveExpression();
         if (left == null) {
             return null;
@@ -326,7 +383,7 @@ public class ScriptureParser {
         }
     }
 
-    public Expression getAdditiveExpression() throws Exception {
+    public Expression getAdditiveExpression() throws IOException {
         final Expression left = getDivisiveExpression();
         if (left == null) {
             return null;
@@ -345,7 +402,7 @@ public class ScriptureParser {
         }
     }
 
-    public Expression getDivisiveExpression() throws Exception {
+    public Expression getDivisiveExpression() throws IOException {
         final Expression left = getMultiplicativeExpression();
         if (left == null) {
             return null;
@@ -364,7 +421,7 @@ public class ScriptureParser {
         }
     }
 
-    public Expression getMultiplicativeExpression() throws Exception {
+    public Expression getMultiplicativeExpression() throws IOException {
         final Expression left = getBooleanExpression();
         if (left == null) {
             return null;
@@ -383,7 +440,7 @@ public class ScriptureParser {
         }
     }
 
-    public Expression getBooleanExpression() throws Exception {
+    public Expression getBooleanExpression() throws IOException {
         final ScriptureToken booleanOpeartorToken = lookAhead(1);
         switch (booleanOpeartorToken.getType()) {
             case NOT:
@@ -417,7 +474,7 @@ public class ScriptureParser {
         }
     }
 
-    public Expression getComparativeExpression() throws Exception {
+    public Expression getComparativeExpression() throws IOException {
         final Expression expression = getKeypathExpression();
         if (expression == null) {
             return null;
@@ -437,7 +494,7 @@ public class ScriptureParser {
         }
     }
 
-    public Expression getKeypathExpression() throws Exception {
+    public Expression getKeypathExpression() throws IOException {
         final Expression expression = getAtomicExpression();
         if (expression == null) {
             return null;
@@ -460,7 +517,7 @@ public class ScriptureParser {
         }
     }
 
-    public Expression getAtomicExpression() throws Exception {
+    public Expression getAtomicExpression() throws IOException {
         final ScriptureToken token = lookAhead(1);
         switch (token.getType()) {
             case INTEGER_LITERAL:

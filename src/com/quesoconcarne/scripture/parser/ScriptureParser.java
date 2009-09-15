@@ -10,6 +10,7 @@ import com.quesoconcarne.scripture.ast.Commandment;
 import com.quesoconcarne.scripture.ast.ComparativeExpression;
 import com.quesoconcarne.scripture.ast.CreateExpression;
 import com.quesoconcarne.scripture.ast.Domain;
+import com.quesoconcarne.scripture.ast.DomainContent;
 import com.quesoconcarne.scripture.ast.Expression;
 import com.quesoconcarne.scripture.ast.ExpressionStatement;
 import com.quesoconcarne.scripture.ast.IfStatement;
@@ -65,14 +66,8 @@ public class ScriptureParser {
             return new Program(domain);
         }
         
-        final List<Node> contents = new ArrayList<Node>();
-        Node domainContent = getDomainContent();
-        while (domainContent != null) {
-            contents.add(domainContent);
-            domainContent = getDomainContent();
-        }
-        
-        return new Program(contents);
+        DomainContent content = getDomainContent();
+        return new Program(content);
     }
 
     public Domain getDomain() throws IOException {
@@ -96,9 +91,8 @@ public class ScriptureParser {
                 validationResult.appendError("Expecting identifier but got: " + nameToken.getLexeme());
                 return null;
         }
-
-        // TODO: Call getBlock()
-        final List blockContents = new ArrayList();
+        
+        final DomainContent content = getDomainContent();
 
         final ScriptureToken delimiterToken = lookAhead(1);
         switch (delimiterToken.getType()) {
@@ -120,13 +114,44 @@ public class ScriptureParser {
                 return null;
         }
 
-        final Domain result = new Domain(nameSegments, blockContents);
+        final Domain result = new Domain(nameSegments, content);
         return result;
     }
 
-    public Node getDomainContent() {
+    public DomainContent getDomainContent() throws IOException {
+        List<Node> nodes = new ArrayList();
+        Node currentNode = getDomainContentNode();
+        while (currentNode != null) {
+            nodes.add(currentNode);
+            currentNode = getDomainContentNode();
+        }
+        return new DomainContent(nodes);
+    }
+
+    public Node getDomainContentNode() throws IOException {
+        final Order order = getOrder();
+        if (order != null) {
+            return order;
+        }
+        final Prophecy prophecy = getProphecy();
+        if (prophecy != null) {
+            return prophecy;
+        }
+        final Commandment commandment = getCommandment();
+        if (commandment != null) {
+            return commandment;
+        }
+        final Artifact artifact = getArtifact();
+        if (artifact != null) {
+            return artifact;
+        }
+        final Statement statement = getStatement();
+        if (statement != null) {
+            return statement;
+        }
         return null;
     }
+
 
     public Order getOrder() throws IOException {
         final ScriptureToken order = lookAhead(1);

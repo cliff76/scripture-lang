@@ -9,6 +9,7 @@ import com.quesoconcarne.scripture.ast.Commandment;
 import com.quesoconcarne.scripture.ast.ComparativeExpression;
 import com.quesoconcarne.scripture.ast.CreateExpression;
 import com.quesoconcarne.scripture.ast.Domain;
+import com.quesoconcarne.scripture.ast.DomainContent;
 import com.quesoconcarne.scripture.ast.Expression;
 import com.quesoconcarne.scripture.ast.ExpressionStatement;
 import com.quesoconcarne.scripture.ast.IfStatement;
@@ -22,7 +23,6 @@ import com.quesoconcarne.scripture.ast.Prophecy;
 import com.quesoconcarne.scripture.ast.Statement;
 import java.io.IOException;
 import java.io.StringReader;
-import java.util.List;
 import junit.framework.TestCase;
 
 public class ScriptureParserTest extends TestCase {
@@ -42,9 +42,9 @@ public class ScriptureParserTest extends TestCase {
         assertNotNull(domain);
         assertEquals("Foo", domain.getSimpleName());
         
-        final List blockContents = domain.getBlockContents();
-        assertNotNull(blockContents);
-        assertEquals(0, blockContents.size());
+        final DomainContent content = domain.getContent();
+        assertNotNull(content);
+        assertEquals(0, content.getChildren().size());
     }
 
     public void testOrder() throws Exception {

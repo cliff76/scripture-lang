@@ -8,12 +8,12 @@ import java.util.List;
  */
 public class Program extends Node {
 
-    private List<Node> blockContents;
+    private DomainContent content;
     private Domain domain;
 
-    public Program(List<Node> blockContents) {
+    public Program(DomainContent content) {
         super();
-        this.blockContents = blockContents;
+        this.content = content;
     }
 
     public Program(Domain domain) {
@@ -21,8 +21,8 @@ public class Program extends Node {
         this.domain = domain;
     }
 
-    public List<Node> getBlockContents() {
-        return blockContents;
+    public DomainContent getContent() {
+        return content;
     }
 
     public Domain getDomain() {
@@ -32,8 +32,8 @@ public class Program extends Node {
     @Override
     public List<? extends Node> getChildren() {
         List<Node> result = new ArrayList<Node>();
-        if (blockContents != null) {
-            result.addAll(blockContents);
+        if (content != null) {
+            result.add(content);
         }
         if (domain != null) {
             result.add(domain);

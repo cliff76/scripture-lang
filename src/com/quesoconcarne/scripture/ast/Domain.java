@@ -7,12 +7,12 @@ import java.util.List;
 public class Domain extends Node {
 
     private List<ScriptureToken> nameSegments;
-    private List blockContents;
+    private DomainContent content;
 
-    public Domain(List<ScriptureToken> nameSegments, List blockContents) {
+    public Domain(List<ScriptureToken> nameSegments, DomainContent content) {
         super();
         this.nameSegments = nameSegments;
-        this.blockContents = blockContents;
+        this.content = content;
     }
 
     public String getSimpleName() {
@@ -22,7 +22,8 @@ public class Domain extends Node {
     }
 
     public boolean hasOrders() {
-        for (Object item : getBlockContents()) {
+        final List<? extends Node> contentChildren = content.getChildren();
+        for (Node item : contentChildren) {
             if (item instanceof Order) {
                 return true;
             }
@@ -30,8 +31,8 @@ public class Domain extends Node {
         return false;
     }
 
-    public List getBlockContents() {
-        return blockContents;
+    public DomainContent getContent() {
+        return content;
     }
 
     public List<ScriptureToken> getNameSegments() {
@@ -49,7 +50,7 @@ public class Domain extends Node {
 
     @Override
     public List<? extends Node> getChildren() {
-        return blockContents;
+        return content.getChildren();
     }
 
 }

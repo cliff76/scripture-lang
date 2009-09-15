@@ -1,5 +1,7 @@
 package com.quesoconcarne.scripture.parser;
 
+import com.quesoconcarne.scripture.ast.ArithmeticExpression;
+import com.quesoconcarne.scripture.ast.AssignmentExpression;
 import com.quesoconcarne.scripture.ast.AtomicExpression;
 import com.quesoconcarne.scripture.ast.BooleanExpression;
 import com.quesoconcarne.scripture.ast.ComparativeExpression;
@@ -117,7 +119,102 @@ public class ScriptureParser {
     }
 
     public Expression getExpression() throws Exception {
-        throw new UnsupportedOperationException("Not yet implemented");
+        return getAssignmentExpression();
+    }
+
+    public Expression getAssignmentExpression() throws Exception {
+        final Expression left = getSubtractiveExpression();
+        if (left == null) {
+            return null;
+        }
+        final ScriptureToken token = lookAhead(1);
+        switch (token.getType()) {
+            case EQUAL:
+                consumeToken();
+                final Expression right = getSubtractiveExpression();
+                if (right == null) {
+                    validationResult.appendError("Expecting expression after: " + token.getLexeme());
+                }
+                return new AssignmentExpression(left, token, right);
+            default:
+                return left;
+        }
+    }
+
+    public Expression getSubtractiveExpression() throws Exception {
+        final Expression left = getAdditiveExpression();
+        if (left == null) {
+            return null;
+        }
+        final ScriptureToken token = lookAhead(1);
+        switch (token.getType()) {
+            case SUBTRACTION_OPERATOR:
+                consumeToken();
+                final Expression right = getAdditiveExpression();
+                if (right == null) {
+                    validationResult.appendError("Expecting expression after: " + token.getLexeme());
+                }
+                return new ArithmeticExpression(left, token, right);
+            default:
+                return left;
+        }
+    }
+
+    public Expression getAdditiveExpression() throws Exception {
+        final Expression left = getDivisiveExpression();
+        if (left == null) {
+            return null;
+        }
+        final ScriptureToken token = lookAhead(1);
+        switch (token.getType()) {
+            case ADDITION_OPERATOR:
+                consumeToken();
+                final Expression right = getDivisiveExpression();
+                if (right == null) {
+                    validationResult.appendError("Expecting expression after: " + token.getLexeme());
+                }
+                return new ArithmeticExpression(left, token, right);
+            default:
+                return left;
+        }
+    }
+
+    public Expression getDivisiveExpression() throws Exception {
+        final Expression left = getMultiplicativeExpression();
+        if (left == null) {
+            return null;
+        }
+        final ScriptureToken token = lookAhead(1);
+        switch (token.getType()) {
+            case DIVISION_OPERATOR:
+                consumeToken();
+                final Expression right = getMultiplicativeExpression();
+                if (right == null) {
+                    validationResult.appendError("Expecting expression after: " + token.getLexeme());
+                }
+                return new ArithmeticExpression(left, token, right);
+            default:
+                return left;
+        }
+    }
+
+    public Expression getMultiplicativeExpression() throws Exception {
+        final Expression left = getBooleanExpression();
+        if (left == null) {
+            return null;
+        }
+        final ScriptureToken token = lookAhead(1);
+        switch (token.getType()) {
+            case MULTIPLICATION_OPERATOR:
+                consumeToken();
+                final Expression right = getBooleanExpression();
+                if (right == null) {
+                    validationResult.appendError("Expecting expression after: " + token.getLexeme());
+                }
+                return new ArithmeticExpression(left, token, right);
+            default:
+                return left;
+        }
     }
 
     public Expression getBooleanExpression() throws Exception {
@@ -149,8 +246,7 @@ public class ScriptureParser {
                         }
                         return new BooleanExpression(left, token, right);
                     default:
-                        validationResult.appendError("Expecting boolean operator at line " + token.getLine() + " column " + token.getCharacter());
-                        return null;
+                        return left;
                 }
         }
     }

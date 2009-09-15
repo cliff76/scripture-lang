@@ -35,6 +35,43 @@ public class ScriptureParserTest extends TestCase {
         assertEquals(0, blockContents.size());
     }
 
+    public void testMultiplicativeExpression() throws Exception {
+        final String leftString = "foo";
+        final String rightString = "bar";
+        final String input = leftString + "*" + rightString;
+        final ScriptureParser parser = createParser(input);
+        final Expression expression = parser.getMultiplicativeExpression();
+        assertNotNull(expression);
+        assertEquals(com.quesoconcarne.scripture.ast.ArithmeticExpression.class, expression.getClass());
+        final com.quesoconcarne.scripture.ast.ArithmeticExpression arithmeticExpr = (com.quesoconcarne.scripture.ast.ArithmeticExpression) expression;
+        
+        final Expression left = arithmeticExpr.getLeft();
+        assertNotNull(left);
+        assertEquals(AtomicExpression.class, left.getClass());
+        final AtomicExpression atomicLeft = (AtomicExpression) left;
+        final ScriptureToken literalLeft = atomicLeft.getLiteral();
+        assertNotNull(literalLeft);
+        assertEquals(ScriptureTokenType.IDENTIFIER, literalLeft.getType());
+        assertEquals(leftString, literalLeft.getLexeme());
+        
+        final ScriptureToken operator = arithmeticExpr.getOperator();
+        assertNotNull(operator);
+        assertEquals(ScriptureTokenType.MULTIPLICATION_OPERATOR, operator.getType());
+
+        final Expression right = arithmeticExpr.getRight();
+        assertNotNull(right);
+        assertEquals(AtomicExpression.class, right.getClass());
+        final AtomicExpression atomicRight = (AtomicExpression) right;
+        final ScriptureToken literalRight = atomicRight.getLiteral();
+        assertNotNull(literalRight);
+        assertEquals(ScriptureTokenType.IDENTIFIER, literalRight.getType());
+        assertEquals(rightString, literalRight.getLexeme());
+    }
+
+    public void testBooleanExpressionNot() throws Exception {
+        
+    }
+
     public void testBooleanExpression() throws Exception {
         testBooleanExpression("foo", "and", "bar", ScriptureTokenType.IDENTIFIER, ScriptureTokenType.AND, ScriptureTokenType.IDENTIFIER);
         testBooleanExpression("foo", "or", "bar", ScriptureTokenType.IDENTIFIER, ScriptureTokenType.OR, ScriptureTokenType.IDENTIFIER);

@@ -124,8 +124,8 @@ public class ScriptureParser {
         return null;
     }
 
-    public ComparativeExpression getComparativeExpression() throws Exception {
-        final KeypathExpression expression = getKeypathExpression();
+    public Expression getComparativeExpression() throws Exception {
+        final Expression expression = getKeypathExpression();
         if (expression == null) {
             return null;
         }
@@ -133,17 +133,17 @@ public class ScriptureParser {
         switch (operatorToken.getType()) {
             case COMPARATIVE_OPERATOR:
                 consumeToken();
-                final KeypathExpression keypathExpression = getKeypathExpression();
+                final Expression keypathExpression = getKeypathExpression();
                 if (keypathExpression == null) {
                     return null;
                 }
                 return new ComparativeExpression(expression, operatorToken, keypathExpression);
             default:
-                return new ComparativeExpression(expression, null, null);
+                return expression;
         }
     }
 
-    public KeypathExpression getKeypathExpression() throws Exception {
+    public Expression getKeypathExpression() throws Exception {
         final Expression expression = getAtomicExpression();
         if (expression == null) {
             return null;
@@ -162,7 +162,7 @@ public class ScriptureParser {
                         return null;
                 }
             default:
-                return new KeypathExpression(expression, null, null);
+                return expression;
         }
     }
 

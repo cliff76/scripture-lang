@@ -4,7 +4,7 @@ import com.quesoconcarne.scripture.ast.AtomicExpression;
 import com.quesoconcarne.scripture.java.runtime.ScriptureNumber;
 import com.quesoconcarne.scripture.java.runtime.ScriptureRegex;
 import com.quesoconcarne.scripture.java.runtime.ScriptureString;
-import com.quesoconcarne.scripture.parser.ScriptureToken;
+import com.quesoconcarne.scripture.ScriptureToken;
 
 public class AtomicExpressionEmitter implements Emitter<AtomicExpression> {
 

@@ -2,8 +2,6 @@ package com.quesoconcarne.scripture;
 
 import com.quesoconcarne.scripture.ast.Program;
 import com.quesoconcarne.scripture.java.ScriptureScriptEngine;
-import com.quesoconcarne.scripture.parser.ScriptureLexer;
-import com.quesoconcarne.scripture.parser.ScriptureParser;
 import java.io.FileReader;
 import java.io.Reader;
 import java.lang.reflect.Constructor;

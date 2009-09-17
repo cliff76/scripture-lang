@@ -1,4 +1,4 @@
-package com.quesoconcarne.scripture.parser;
+package com.quesoconcarne.scripture;
 
 public class ScriptureToken {
     private ScriptureTokenType type;

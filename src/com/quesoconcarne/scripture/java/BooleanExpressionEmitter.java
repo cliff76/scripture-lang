@@ -3,7 +3,7 @@ package com.quesoconcarne.scripture.java;
 import com.quesoconcarne.scripture.ast.BooleanExpression;
 import com.quesoconcarne.scripture.ast.Expression;
 import com.quesoconcarne.scripture.java.runtime.ScriptureBoolean;
-import com.quesoconcarne.scripture.parser.ScriptureToken;
+import com.quesoconcarne.scripture.ScriptureToken;
 
 public class BooleanExpressionEmitter implements Emitter<BooleanExpression> {
 

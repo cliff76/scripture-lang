@@ -1,6 +1,6 @@
 package com.quesoconcarne.scripture.ast;
 
-import com.quesoconcarne.scripture.parser.ScriptureToken;
+import com.quesoconcarne.scripture.ScriptureToken;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -22,8 +22,10 @@ public class Prophecy extends Node {
     @Override
     public List<? extends Node> getChildren() {
         List<Node> result = new ArrayList<Node>();
-        result.add(expression);
-        result.add(block);
+        if (expression != null) {
+            result.add(expression);
+        }
+        result.addAll(block.getChildren());
         return result;
     }
 

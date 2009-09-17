@@ -1,5 +1,10 @@
-package com.quesoconcarne.scripture.parser;
+package com.quesoconcarne.scripture;
 
+import com.quesoconcarne.scripture.ScriptureTokenType;
+import com.quesoconcarne.scripture.LexerEn;
+import com.quesoconcarne.scripture.ScriptureToken;
+import com.quesoconcarne.scripture.ScriptureParser;
+import com.quesoconcarne.scripture.ScriptureLexer;
 import com.quesoconcarne.scripture.ast.Artifact;
 import com.quesoconcarne.scripture.ast.AssignmentExpression;
 import com.quesoconcarne.scripture.ast.Block;

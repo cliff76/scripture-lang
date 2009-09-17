@@ -1,5 +1,8 @@
-package com.quesoconcarne.scripture.parser;
+package com.quesoconcarne.scripture;
 
+import com.quesoconcarne.scripture.ScriptureParser;
+import com.quesoconcarne.scripture.ScriptureLexer;
+import com.quesoconcarne.scripture.LexerEn;
 import com.quesoconcarne.scripture.ast.Program;
 import java.io.BufferedReader;
 import java.io.FileReader;

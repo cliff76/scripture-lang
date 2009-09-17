@@ -1,4 +1,4 @@
-package com.quesoconcarne.scripture.parser;
+package com.quesoconcarne.scripture;
 
 import java.io.StringReader;
 import java.util.Iterator;

@@ -1,6 +1,6 @@
 package com.quesoconcarne.scripture.ast;
 
-import com.quesoconcarne.scripture.parser.ScriptureToken;
+import com.quesoconcarne.scripture.ScriptureToken;
 import java.util.ArrayList;
 import java.util.List;
 

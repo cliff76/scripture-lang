@@ -1,4 +1,4 @@
-package com.quesoconcarne.scripture.parser;
+package com.quesoconcarne.scripture;
 
 import com.quesoconcarne.scripture.ast.Node;
 import java.util.ArrayList;

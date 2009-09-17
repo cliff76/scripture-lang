@@ -3,8 +3,8 @@ package com.quesoconcarne.scripture.java;
 import com.quesoconcarne.scripture.ast.Node;
 import com.quesoconcarne.scripture.ast.Order;
 import com.quesoconcarne.scripture.java.runtime.ScriptureClass;
-import com.quesoconcarne.scripture.parser.ScriptureToken;
-import com.quesoconcarne.scripture.parser.ScriptureTokenType;
+import com.quesoconcarne.scripture.ScriptureToken;
+import com.quesoconcarne.scripture.ScriptureTokenType;
 import java.util.List;
 
 public class OrderEmitter implements Emitter<Order> {

@@ -3,7 +3,7 @@ package com.quesoconcarne.scripture.java;
 import com.quesoconcarne.scripture.ast.Expression;
 import com.quesoconcarne.scripture.ast.Node;
 import com.quesoconcarne.scripture.ast.Prophecy;
-import com.quesoconcarne.scripture.parser.ScriptureToken;
+import com.quesoconcarne.scripture.ScriptureToken;
 import java.util.List;
 
 public class ProphecyEmitter implements Emitter<Prophecy> {

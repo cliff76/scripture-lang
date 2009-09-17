@@ -1,4 +1,4 @@
-package com.quesoconcarne.scripture.parser;
+package com.quesoconcarne.scripture;
 
 import com.quesoconcarne.scripture.ast.ArithmeticExpression;
 import com.quesoconcarne.scripture.ast.Artifact;

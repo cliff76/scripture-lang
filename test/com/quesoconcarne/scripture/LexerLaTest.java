@@ -1,12 +1,14 @@
-package com.quesoconcarne.scripture.parser;
+package com.quesoconcarne.scripture;
 
+import com.quesoconcarne.scripture.LexerLa;
+import com.quesoconcarne.scripture.ScriptureLexer;
 import java.io.StringReader;
 
-public class LexerEnTest extends LexerTest {
+public class LexerLaTest extends LexerTest {
 
     @Override
     protected ScriptureLexer getLexer() {
-        return new LexerEn(new StringReader(""));
+        return new LexerLa(new StringReader(""));
     }
 
     @Override
@@ -26,42 +28,42 @@ public class LexerEnTest extends LexerTest {
 
     @Override
     protected String getAnd() {
-        return "and";
+        return "et";
     }
 
     @Override
     protected String getArtifact() {
-        return "artifact";
+        return "artefactum";
     }
 
     @Override
     protected String getBoolean() {
-        return "boolean";
+        return "bool";
     }
 
     @Override
     protected String getCommandment() {
-        return "commandment";
+        return "decalogus";
     }
 
     @Override
     protected String getCreate() {
-        return "let there be";
+        return "creare";
     }
 
     @Override
     protected String getCreation() {
-        return "creation";
+        return "nihilo";
     }
 
     @Override
     protected String getElse() {
-        return "else";
+        return "sinon";
     }
 
     @Override
     protected String getFalse() {
-        return "false";
+        return "falsus";
     }
 
     @Override
@@ -71,52 +73,52 @@ public class LexerEnTest extends LexerTest {
 
     @Override
     protected String getIf() {
-        return "if";
+        return "si";
     }
 
     @Override
     protected String getInteger() {
-        return "integer";
+        return "integrum";
     }
 
     @Override
     protected String getNot() {
-        return "not";
+        return "non";
     }
 
     @Override
     protected String getOf() {
-        return "of";
+        return "ex";
     }
 
     @Override
     protected String getOr() {
-        return "or";
+        return "aut";
     }
 
     @Override
     protected String getOrder() {
-        return "order";
+        return "ordo";
     }
 
     @Override
     protected String getPray() {
-        return "pray";
+        return "resare";
     }
 
     @Override
     protected String getPreach() {
-        return "preach";
+        return "predicare";
     }
 
     @Override
     protected String getProphecy() {
-        return "prophecy";
+        return "professare";
     }
 
     @Override
     protected String getReal() {
-        return "real";
+        return "rei";
     }
 
     @Override
@@ -126,22 +128,22 @@ public class LexerEnTest extends LexerTest {
 
     @Override
     protected String getScripture() {
-        return "scripture";
+        return "scriptura";
     }
 
     @Override
     protected String getString() {
-        return "string";
+        return "catena";
     }
 
     @Override
     protected String getTrue() {
-        return "true";
+        return "verus";
     }
 
     @Override
     protected String getXor() {
-        return "xor";
+        return "xaut";
     }
 
 }

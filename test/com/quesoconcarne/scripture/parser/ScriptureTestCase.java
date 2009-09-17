@@ -1,16 +1,14 @@
-package com.quesoconcarne.scripture;
+package com.quesoconcarne.scripture.parser;
 
-import com.quesoconcarne.scripture.ScriptureParser.program_return;
+import com.quesoconcarne.scripture.ast.Program;
 import java.io.BufferedReader;
+import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import junit.framework.TestCase;
-import org.antlr.runtime.ANTLRFileStream;
-import org.antlr.runtime.CommonTokenStream;
-import org.antlr.runtime.RecognitionException;
 
 public abstract class ScriptureTestCase extends TestCase {
 
@@ -34,14 +32,10 @@ public abstract class ScriptureTestCase extends TestCase {
         return sw.toString();
     }
 
-    public Program getProgram(String fileName) throws IOException, RecognitionException {
-        ANTLRFileStream inputStream = new ANTLRFileStream(fileName);
-        ScriptureLexer lexer = new ScriptureLexer(inputStream);
-        CommonTokenStream tokenStream = new CommonTokenStream(lexer);
-
-        ScriptureParser parser = new ScriptureParser(tokenStream);
-        program_return program = parser.program();
-        return program.result;
+    public Program getProgram(String fileName) throws IOException {
+        ScriptureLexer lexer = new LexerEn(new FileReader(fileName));
+        ScriptureParser parser = new ScriptureParser(lexer);
+        return parser.getProgram();
     }
 
 }

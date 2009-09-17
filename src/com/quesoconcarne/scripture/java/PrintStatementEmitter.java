@@ -1,7 +1,7 @@
 package com.quesoconcarne.scripture.java;
 
-import com.quesoconcarne.scripture.Expression;
-import com.quesoconcarne.scripture.PreachStatement;
+import com.quesoconcarne.scripture.ast.Expression;
+import com.quesoconcarne.scripture.ast.PreachStatement;
 
 public class PrintStatementEmitter implements Emitter<PreachStatement> {
 

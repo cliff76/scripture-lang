@@ -1,9 +1,9 @@
 package com.quesoconcarne.scripture.java;
 
-import com.quesoconcarne.scripture.Artifact;
-import com.quesoconcarne.scripture.Expression;
+import com.quesoconcarne.scripture.ast.Artifact;
+import com.quesoconcarne.scripture.ast.Expression;
 import com.quesoconcarne.scripture.java.runtime.ScriptureObject;
-import org.antlr.runtime.Token;
+import com.quesoconcarne.scripture.parser.ScriptureToken;
 
 public class ArtifactEmitter implements Emitter<Artifact> {
 
@@ -12,7 +12,7 @@ public class ArtifactEmitter implements Emitter<Artifact> {
         if (value == null) {
             return;
         }
-        final Token name = node.getName();
+        final ScriptureToken name = node.getName();
         String typeName = value.getTypeName();
         if (typeName == null) {
             typeName = ScriptureObject.class.getSimpleName();
@@ -21,7 +21,7 @@ public class ArtifactEmitter implements Emitter<Artifact> {
         final SourceChannel channel = output.getCurrentSourceFile().getCurrentChannel();
         channel.append(typeName);
         channel.append(" ");
-        channel.append(name.getText());
+        channel.append(name.getLexeme());
         channel.append(" = ");
         EmitterFactory.getInstance().getEmitterForNode(value).emit(value, context);
         channel.append(";\n");

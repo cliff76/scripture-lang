@@ -1,9 +1,9 @@
-package com.quesoconcarne.scripture;
+package com.quesoconcarne.scripture.parser;
 
-import com.quesoconcarne.scripture.ScriptureParser.program_return;
+import com.quesoconcarne.scripture.*;
+import com.quesoconcarne.scripture.ast.Program;
+import java.io.FileReader;
 import java.net.URL;
-import org.antlr.runtime.ANTLRFileStream;
-import org.antlr.runtime.CommonTokenStream;
 
 public class ProgramReturnTest extends ScriptureTestCase {
 
@@ -21,17 +21,13 @@ public class ProgramReturnTest extends ScriptureTestCase {
         URL inputURL = getClass().getResource("Test.scripture");
         String inputPath = inputURL.getPath();
 
-        ANTLRFileStream inputStream = new ANTLRFileStream(inputPath);
-        ScriptureLexer lexer = new ScriptureLexer(inputStream);
-        CommonTokenStream tokenStream = new CommonTokenStream(lexer);
-
-        ScriptureParser parser = new ScriptureParser(tokenStream);
-        program_return program = parser.program();
-        assertNotNull(program.result);
+        ScriptureLexer lexer = new LexerEn(new FileReader(inputPath));
+        ScriptureParser parser = new ScriptureParser(lexer);
+        Program program = parser.getProgram();
         String expectedOutput = getFileAsStream("Test.output");
 
         TreePrinter printer = new TreePrinter();
-        program.result.accept(printer);
+        program.accept(printer);
         String printerOutput = printer.getOutput();
 //        assertEquals(printerOutput, expectedOutput);
     }

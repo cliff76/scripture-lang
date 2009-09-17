@@ -1,7 +1,7 @@
 package com.quesoconcarne.scripture.java;
 
-import com.quesoconcarne.scripture.Program;
-import com.quesoconcarne.scripture.ScriptureTestCase;
+import com.quesoconcarne.scripture.ast.Program;
+import com.quesoconcarne.scripture.parser.ScriptureTestCase;
 import java.net.URL;
 
 public class ProgramTest extends ScriptureTestCase {
@@ -10,7 +10,7 @@ public class ProgramTest extends ScriptureTestCase {
         URL inputURL = getClass().getResource(getClass().getSimpleName() + ".scripture");
         Program program = getProgram(inputURL.getPath());
         ScriptureScriptEngine target = new ScriptureScriptEngine();
-        target.setOutputFile("/tmpt/javaTargetTest");
+        target.setOutputFile("/tmp/javaTargetTest");
         target.run(program);
     }
 

@@ -1,10 +1,10 @@
 package com.quesoconcarne.scripture.java;
 
-import com.quesoconcarne.scripture.BinaryExpression;
-import com.quesoconcarne.scripture.Expression;
+import com.quesoconcarne.scripture.ast.BinaryExpression;
+import com.quesoconcarne.scripture.ast.Expression;
+import com.quesoconcarne.scripture.parser.ScriptureToken;
 import java.util.HashMap;
 import java.util.Map;
-import org.antlr.runtime.Token;
 
 // TODO: Rename to arithmetic expression emitter.
 public class ArithmeticExpressionEmitter implements Emitter<BinaryExpression> {
@@ -20,7 +20,7 @@ public class ArithmeticExpressionEmitter implements Emitter<BinaryExpression> {
 
     public void emit(BinaryExpression node, EmitContext context) throws Exception {
         final Expression left = node.getLeft();
-        final Token operator = node.getOperator();
+        final ScriptureToken operator = node.getOperator();
         final Expression right = node.getRight();
         final EmitOutput output = context.getOutput();
         final SourceFile sourceFile = output.getCurrentSourceFile();
@@ -33,7 +33,7 @@ public class ArithmeticExpressionEmitter implements Emitter<BinaryExpression> {
         factory.getEmitterForNode(left).emit(left, context);
         channel.append(".");
 
-        final String operatorLexeme = operator.getText();
+        final String operatorLexeme = operator.getLexeme();
         final String methodName = OPERATOR_MAP.get(operatorLexeme);
         if (methodName == null) {
             throw new CompilerBugException("Unsupported operator lexeme: " + operatorLexeme);

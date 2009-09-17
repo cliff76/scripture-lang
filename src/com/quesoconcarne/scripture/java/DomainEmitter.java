@@ -1,7 +1,7 @@
 package com.quesoconcarne.scripture.java;
 
-import com.quesoconcarne.scripture.Domain;
-import com.quesoconcarne.scripture.Node;
+import com.quesoconcarne.scripture.ast.Domain;
+import com.quesoconcarne.scripture.ast.Node;
 import java.util.List;
 
 public class DomainEmitter implements Emitter<Domain> {
@@ -15,7 +15,7 @@ public class DomainEmitter implements Emitter<Domain> {
 
         context.pushContainer(domain);
         try {
-            final List blockContents = domain.getBlockContents();
+            final List blockContents = domain.getChildren();
             for (Object object : blockContents) {
                 Node currentNode = (Node) object;
                 Emitter emitter = EmitterFactory.getInstance().getEmitterForNode(currentNode);

@@ -1,28 +1,43 @@
 package com.quesoconcarne.scripture;
 
+import com.quesoconcarne.scripture.ast.Program;
 import com.quesoconcarne.scripture.java.ScriptureScriptEngine;
-import org.antlr.runtime.ANTLRFileStream;
-import org.antlr.runtime.CommonTokenStream;
-import org.antlr.runtime.RecognitionException;
+import com.quesoconcarne.scripture.parser.ScriptureLexer;
+import com.quesoconcarne.scripture.parser.ScriptureParser;
+import java.io.FileReader;
+import java.io.Reader;
+import java.lang.reflect.Constructor;
 
 public class ScriptureC {
 
+    private static void printUsage() {
+        System.err.println("Usage: ScriptureC [2-letter locale code] <source file>");
+    }
+
     public static void main(String args[]) throws Exception {
-        if (args.length < 1) {
-            System.err.println("Usage: ScriptureC <source file>");
+        if (args.length != 2) {
+            printUsage();
             System.exit(1);
         }
-        String input = args[0];
-        ANTLRFileStream inputStream = new ANTLRFileStream(input);
-        ScriptureLexer lexer = new ScriptureLexer(inputStream);
-        CommonTokenStream tokenStream = new CommonTokenStream(lexer);
-        ScriptureParser parser = new ScriptureParser(tokenStream);
-        try {
-            final Program program = parser.program().result;
-            RunnableBackend backend = new ScriptureScriptEngine();
-            backend.run(program);
-        } catch (RecognitionException e) {
-            e.printStackTrace();
+        String locale = args[0];
+        if (locale.length() != 2) {
+            printUsage();
+            System.exit(2);
         }
+        final Class lexerClass;
+        try {
+            lexerClass = Class.forName("Lexer" + locale.toUpperCase());
+        }
+        catch (Exception e) {
+            throw new Exception("Cannot load lexer for locale: " + locale, e);
+        }
+        final String inputFilename = args[1];
+        final FileReader fileReader = new FileReader(inputFilename);
+        final Constructor<?> constructor = lexerClass.getConstructor(Reader.class);
+        final ScriptureLexer lexer = (ScriptureLexer) constructor.newInstance(fileReader);
+        ScriptureParser parser = new ScriptureParser(lexer);
+        final Program program = parser.getProgram();
+        ScriptureScriptEngine backend = new ScriptureScriptEngine();
+        backend.run(program);
     }
 }

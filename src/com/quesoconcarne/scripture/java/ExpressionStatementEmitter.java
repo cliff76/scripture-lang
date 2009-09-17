@@ -1,7 +1,7 @@
 package com.quesoconcarne.scripture.java;
 
-import com.quesoconcarne.scripture.Expression;
-import com.quesoconcarne.scripture.ExpressionStatement;
+import com.quesoconcarne.scripture.ast.Expression;
+import com.quesoconcarne.scripture.ast.ExpressionStatement;
 
 public class ExpressionStatementEmitter implements Emitter<ExpressionStatement> {
 

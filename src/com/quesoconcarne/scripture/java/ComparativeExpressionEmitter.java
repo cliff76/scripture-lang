@@ -1,11 +1,11 @@
 package com.quesoconcarne.scripture.java;
 
-import com.quesoconcarne.scripture.ComparativeExpression;
-import com.quesoconcarne.scripture.Expression;
+import com.quesoconcarne.scripture.ast.ComparativeExpression;
+import com.quesoconcarne.scripture.ast.Expression;
 import com.quesoconcarne.scripture.java.runtime.ScriptureBoolean;
+import com.quesoconcarne.scripture.parser.ScriptureToken;
 import java.util.HashMap;
 import java.util.Map;
-import org.antlr.runtime.Token;
 
 public class ComparativeExpressionEmitter implements Emitter<ComparativeExpression>{
 
@@ -25,14 +25,14 @@ public class ComparativeExpressionEmitter implements Emitter<ComparativeExpressi
 
     public void emit(ComparativeExpression node, EmitContext context) throws Exception {
         final Expression left = node.getLeft();
-        final Token operator = node.getOperator();
+        final ScriptureToken operator = node.getOperator();
         final Expression right = node.getRight();
         final EmitOutput output = context.getOutput();
         final SourceFile sourceFile = output.getCurrentSourceFile();
         final SourceChannel channel = sourceFile.getCurrentChannel();
         final EmitterFactory factory = EmitterFactory.getInstance();
         
-        final String expectedCompareToResult = OPERATOR_MAP.get(operator.getText());
+        final String expectedCompareToResult = OPERATOR_MAP.get(operator.getLexeme());
         if (expectedCompareToResult == null) {
             // Perform a Java object ==.
             

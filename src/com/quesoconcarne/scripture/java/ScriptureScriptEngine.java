@@ -1,7 +1,6 @@
 package com.quesoconcarne.scripture.java;
 
-import com.quesoconcarne.scripture.Node;
-import com.quesoconcarne.scripture.RunnableBackend;
+import com.quesoconcarne.scripture.ast.Node;
 import java.io.File;
 import java.lang.reflect.Method;
 import java.util.List;

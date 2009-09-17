@@ -1,10 +1,9 @@
 package com.quesoconcarne.scripture.java;
 
-import com.quesoconcarne.scripture.BooleanExpression;
-import com.quesoconcarne.scripture.Expression;
-import com.quesoconcarne.scripture.ScriptureLexer;
+import com.quesoconcarne.scripture.ast.BooleanExpression;
+import com.quesoconcarne.scripture.ast.Expression;
 import com.quesoconcarne.scripture.java.runtime.ScriptureBoolean;
-import org.antlr.runtime.Token;
+import com.quesoconcarne.scripture.parser.ScriptureToken;
 
 public class BooleanExpressionEmitter implements Emitter<BooleanExpression> {
 
@@ -13,7 +12,7 @@ public class BooleanExpressionEmitter implements Emitter<BooleanExpression> {
         final Boolean constant = node.getValue();
         if (constant == null) {
             final Expression left = node.getLeft();
-            final Token operator = node.getOperator();
+            final ScriptureToken operator = node.getOperator();
             final Expression right = node.getRight();
 
             if (left == null) {
@@ -43,7 +42,7 @@ public class BooleanExpressionEmitter implements Emitter<BooleanExpression> {
      * @param right {@link Expression}
      * @throws java.lang.Exception
      */
-    private void handleBinary(EmitContext context, SourceChannel channel, Expression left, Token operator, Expression right) throws Exception {
+    private void handleBinary(EmitContext context, SourceChannel channel, Expression left, ScriptureToken operator, Expression right) throws Exception {
         // Open parenthesis for the entire expression.
         channel.append("new ");
         channel.append(ScriptureBoolean.class.getSimpleName());
@@ -53,16 +52,16 @@ public class BooleanExpressionEmitter implements Emitter<BooleanExpression> {
         EmitterFactory.getInstance().getEmitterForNode(left).emit(left, context);
         channel.append(").booleanValue()");
         switch (operator.getType()) {
-            case ScriptureLexer.AND:
+            case AND:
                 channel.append(" && ");
                 break;
-            case ScriptureLexer.OR:
+            case OR:
                 channel.append(" || ");
                 break;
-            case ScriptureLexer.XOR:
+            case XOR:
                 channel.append(" ^ ");
                 break;
-            case ScriptureLexer.NOT:
+            case NOT:
                 channel.append(" && ");
                 break;
         }

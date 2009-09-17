@@ -1,8 +1,8 @@
 package com.quesoconcarne.scripture.java;
 
-import com.quesoconcarne.scripture.Expression;
-import com.quesoconcarne.scripture.IfStatement;
-import com.quesoconcarne.scripture.Node;
+import com.quesoconcarne.scripture.ast.Expression;
+import com.quesoconcarne.scripture.ast.IfStatement;
+import com.quesoconcarne.scripture.ast.Node;
 import java.util.List;
 
 public class IfStatementEmitter implements Emitter<IfStatement> {
@@ -14,7 +14,7 @@ public class IfStatementEmitter implements Emitter<IfStatement> {
         EmitterFactory.getInstance().getEmitterForNode(expression).emit(expression, context);
         channel.append(").booleanValue()) {\n");
         
-        final List ifBlockContents = node.getBlockContents();
+        final List ifBlockContents = node.getChildren();
         if (ifBlockContents != null) {
             for (Object item : ifBlockContents) {
                 if (item instanceof Node) {
@@ -28,7 +28,7 @@ public class IfStatementEmitter implements Emitter<IfStatement> {
         }
         channel.append("} // End of if \n");
         
-        final List elseBlockContents = node.getElseBlockContents();
+        final List elseBlockContents = node.getChildren();
         if (elseBlockContents != null) {
             channel.append("else {\n");
             for (Object item : elseBlockContents) {

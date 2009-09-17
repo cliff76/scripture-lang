@@ -1,7 +1,7 @@
 package com.quesoconcarne.scripture.java;
 
-import com.quesoconcarne.scripture.Expression;
-import com.quesoconcarne.scripture.PrayStatement;
+import com.quesoconcarne.scripture.ast.Expression;
+import com.quesoconcarne.scripture.ast.PrayStatement;
 
 public class PrayStatementEmitter implements Emitter<PrayStatement> {
 

@@ -1,8 +1,8 @@
 package com.quesoconcarne.scripture.java;
 
-import com.quesoconcarne.scripture.Domain;
-import com.quesoconcarne.scripture.Node;
-import com.quesoconcarne.scripture.Program;
+import com.quesoconcarne.scripture.ast.Domain;
+import com.quesoconcarne.scripture.ast.Node;
+import com.quesoconcarne.scripture.ast.Program;
 import java.util.List;
 
 public class ProgramEmitter implements Emitter<Program> {
@@ -16,7 +16,7 @@ public class ProgramEmitter implements Emitter<Program> {
             if (domain != null) {
                 factory.getEmitterForNode(domain).emit(domain, context);
             }
-            final List<Node> blockContents = program.getBlockContents();
+            final List<? extends Node> blockContents = program.getChildren();
             if (blockContents != null) {
                 for (Node blockItem : blockContents) {
                     Node blockItemNode = (Node) blockItem;

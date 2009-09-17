@@ -1,6 +1,6 @@
 package com.quesoconcarne.scripture.java;
 
-import com.quesoconcarne.scripture.Node;
+import com.quesoconcarne.scripture.ast.Node;
 import java.io.File;
 import java.util.Stack;
 

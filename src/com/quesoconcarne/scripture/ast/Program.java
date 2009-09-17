@@ -33,7 +33,7 @@ public class Program extends Node {
     public List<? extends Node> getChildren() {
         List<Node> result = new ArrayList<Node>();
         if (content != null) {
-            result.add(content);
+            result.addAll(content.getChildren());
         }
         if (domain != null) {
             result.add(domain);

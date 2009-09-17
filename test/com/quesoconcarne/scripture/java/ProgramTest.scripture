@@ -1,11 +1,11 @@
-scriptura mynamespace:
+scripture mynamespace:
 
     prophecy genesis:
-        artefactum foo = let there be Foo;
+        artifact foo = let there be Foo;
         foo.go;
     amen
 
-    order Foo ex nihilo:
+    order Foo from creation:
         commandment go:
             preach "Hello from an instance of Foo!";
         amen

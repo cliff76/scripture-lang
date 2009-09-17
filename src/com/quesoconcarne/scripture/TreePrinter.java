@@ -1,6 +1,8 @@
 package com.quesoconcarne.scripture;
 
 import java.util.List;
+import com.quesoconcarne.scripture.ast.Node;
+import com.quesoconcarne.scripture.ast.NodeVisitor;
 
 public class TreePrinter implements NodeVisitor {
 

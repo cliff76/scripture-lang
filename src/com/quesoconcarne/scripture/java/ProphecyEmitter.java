@@ -1,12 +1,10 @@
 package com.quesoconcarne.scripture.java;
 
-import com.quesoconcarne.scripture.Expression;
-import com.quesoconcarne.scripture.Node;
-import com.quesoconcarne.scripture.Prophecy;
-import com.quesoconcarne.scripture.java.runtime.GenesisListener;
-import com.quesoconcarne.scripture.java.runtime.ProphecyNotificationCenter;
+import com.quesoconcarne.scripture.ast.Expression;
+import com.quesoconcarne.scripture.ast.Node;
+import com.quesoconcarne.scripture.ast.Prophecy;
+import com.quesoconcarne.scripture.parser.ScriptureToken;
 import java.util.List;
-import org.antlr.runtime.Token;
 
 public class ProphecyEmitter implements Emitter<Prophecy> {
 
@@ -18,15 +16,15 @@ public class ProphecyEmitter implements Emitter<Prophecy> {
         if (expression != null) {
             throw new CompilerBugException("Sorry, expression prophecies are not yet implemented.");
         }
-        final Token alias = prophecy.getAlias();
-        final List<Node> blockContents = prophecy.getBlockContents();
+        final ScriptureToken alias = prophecy.getAlias();
+        final List<? extends Node> blockContents = prophecy.getChildren();
 
         final EmitOutput output = context.getOutput();
         final SourceFile sourceFile = output.getCurrentSourceFile();
 
         String prophecyName;
         if (alias != null) {
-            prophecyName = alias.getText();
+            prophecyName = alias.getLexeme();
         }
         else {
             final int count = context.getCurrentAnonymousProphecyCounter();

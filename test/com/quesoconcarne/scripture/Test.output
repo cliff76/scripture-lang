@@ -3,22 +3,26 @@ Program
       Order
          Artifact
       Artifact
-         StringExpression
+         AtomicExpression
       Artifact
          CreateExpression
-      PrintStatement
-         IntegerExpression
+      PreachStatement
+         AtomicExpression
       IfStatement
          BooleanExpression
-            IntegerExpression
-            IntegerExpression
-         PrintStatement
-            IntegerExpression
+            AtomicExpression
+            AtomicExpression
+         Block
+            PreachStatement
+               AtomicExpression
       IfStatement
          BooleanExpression
-         IfStatement
-            BooleanExpression
-            PrintStatement
-               StringExpression
-            PrintStatement
-               StringExpression
+         Block
+            IfStatement
+               BooleanExpression
+               Block
+                  PreachStatement
+                     AtomicExpression
+               Block
+                  PreachStatement
+                     AtomicExpression

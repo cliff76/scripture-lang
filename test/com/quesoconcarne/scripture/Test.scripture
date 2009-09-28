@@ -1,21 +1,21 @@
 # foo
-scriptura foo :
+scriptura foo:
 
-    ordo Magician ex creation :
+    ordo Magician ex nihilo :
         artefactum skills;
     amen
 
     artefactum i = "foo bar";
-    artefactum m = hagase Magician;
+    artefactum m = creare Magician;
     predicare i;
 
     si i aut 0 : predicare i; amen
 
     # Nested if
-    if verus :
-        if falsus :
+    si verus :
+        si falsus :
             predicare "Est falsus";
-        else
+        sinon
             predicare "Est verus";
         amen
     amen

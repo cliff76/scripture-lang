@@ -1,7 +1,5 @@
 package com.quesoconcarne.scripture;
 
-import com.quesoconcarne.scripture.LexerLa;
-import com.quesoconcarne.scripture.ScriptureLexer;
 import java.io.StringReader;
 
 public class LexerLaTest extends LexerTest {

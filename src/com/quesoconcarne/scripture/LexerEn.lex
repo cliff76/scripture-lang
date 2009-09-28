@@ -1,4 +1,4 @@
-package com.quesoconcarne.scripture.parser;
+package com.quesoconcarne.scripture;
 
 /**
  * This is the lexer class for all English locales.
@@ -57,7 +57,7 @@ package com.quesoconcarne.scripture.parser;
 <YYINITIAL> "regexp"       { return new ScriptureToken(ScriptureTokenType.REGEXP, yytext(), yyline, yychar); }
 
 /* See the rest of non-localizable comparative operators below */
-<YYINITIAL> "est"          { return new ScriptureToken(ScriptureTokenType.COMPARATIVE_OPERATOR, yytext(), yyline, yychar); }
+<YYINITIAL> "is"          { return new ScriptureToken(ScriptureTokenType.COMPARATIVE_OPERATOR, yytext(), yyline, yychar); }
 
 
 /********** End localizable tokens **********/

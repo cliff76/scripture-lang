@@ -1,7 +1,5 @@
 package com.quesoconcarne.scripture;
 
-import com.quesoconcarne.scripture.ScriptureLexer;
-import com.quesoconcarne.scripture.LexerEn;
 import java.io.StringReader;
 
 public class LexerEnTest extends LexerTest {
@@ -13,7 +11,7 @@ public class LexerEnTest extends LexerTest {
 
     @Override
     protected String getEst() {
-        return "est";
+        return "is";
     }
 
     @Override

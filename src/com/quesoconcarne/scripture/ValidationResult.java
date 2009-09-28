@@ -8,6 +8,10 @@ public class ValidationResult {
 
     private List<String> errors = new ArrayList<String>();
 
+    public boolean hasErrors() {
+        return errors.size() > 0;
+    }
+
     public void appendUnexpectedTokenError(ScriptureTokenType expected, ScriptureToken encountered) {
         appendError("Expected " + expected + " but got " + encountered);
     }

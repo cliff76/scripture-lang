@@ -39,7 +39,7 @@ public class ScriptureToken {
 
     @Override
     public String toString() {
-        return type + "(" + line + "," + character + ") : " + lexeme;
+        return type + "(" + (line + 1) + "," + character + ") : " + lexeme;
     }
 
 }

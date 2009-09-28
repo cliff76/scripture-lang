@@ -1,4 +1,4 @@
-package com.quesoconcarne.scripture.parser;
+package com.quesoconcarne.scripture;
 
 /**
  * This is the lexer class for Latin.

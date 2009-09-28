@@ -17,17 +17,21 @@ public class ProgramReturnTest extends ScriptureTestCase {
     }
 
     public void testSimple() throws Exception {
-        URL inputURL = getClass().getResource("Test.scripture");
-        String inputPath = inputURL.getPath();
+        final URL inputURL = getClass().getResource("Test.scripture");
+        final String inputPath = inputURL.getPath();
 
-        ScriptureLexer lexer = new LexerEn(new FileReader(inputPath));
-        ScriptureParser parser = new ScriptureParser(lexer);
-        Program program = parser.getProgram();
-        String expectedOutput = getFileAsStream("Test.output");
-
-        TreePrinter printer = new TreePrinter();
+        final ScriptureLexer lexer = new LexerLa(new FileReader(inputPath));
+        final ScriptureParser parser = new ScriptureParser(lexer);
+        final Program program = parser.getProgram();
+        final ValidationResult validationResult = parser.getValidationResult();
+        
+        assertNotNull(validationResult);
+        assertFalse("Errors found: " + validationResult.getErrors(), validationResult.hasErrors());
+        
+        final String expectedOutput = getFileAsStream("Test.output");
+        final TreePrinter printer = new TreePrinter();
         program.accept(printer);
-        String printerOutput = printer.getOutput();
-//        assertEquals(printerOutput, expectedOutput);
+        final String printerOutput = printer.getOutput();
+        assertEquals(printerOutput, expectedOutput);
     }
 }

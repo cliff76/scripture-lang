@@ -92,8 +92,6 @@ public class ScriptureParser {
                 return null;
         }
         
-        final DomainContent content = getDomainContent();
-
         final ScriptureToken delimiterToken = lookAhead(1);
         switch (delimiterToken.getType()) {
             case DELIMITER:
@@ -103,6 +101,8 @@ public class ScriptureParser {
                 validationResult.appendUnexpectedTokenError(ScriptureTokenType.DELIMITER, delimiterToken);
                 return null;
         }
+
+        final DomainContent content = getDomainContent();
 
         final ScriptureToken amenToken = lookAhead(1);
         switch (amenToken.getType()) {
@@ -179,6 +179,9 @@ public class ScriptureParser {
                 parent = lookAhead(1);
                 switch (parent.getType()) {
                     case IDENTIFIER:
+                        consumeToken();
+                        break;
+                    case CREATION:
                         consumeToken();
                         break;
                     default:
@@ -389,7 +392,7 @@ public class ScriptureParser {
                                 consumeToken();
                                 return new Artifact(name, expr);
                             default:
-                                validationResult.appendUnexpectedTokenError(ScriptureTokenType.SEMICOLON, name);
+                                validationResult.appendUnexpectedTokenError(ScriptureTokenType.SEMICOLON, semi);
                                 return null;
                         }
                     default:
@@ -408,6 +411,10 @@ public class ScriptureParser {
         }
 
         // TODO: Do if statment
+        final Statement ifStatement = getIfStatement();
+        if (ifStatement != null) {
+            return ifStatement;
+        }
 
         final Statement preach = getPreachStatement();
         if (preach != null) {
@@ -773,9 +780,12 @@ public class ScriptureParser {
                 }
                 
             default:
-                validationResult.appendUnexpectedTokenError(ScriptureTokenType.BOOLEAN, token);
                 return null;
         }
+    }
+
+    public ValidationResult getValidationResult() {
+        return validationResult;
     }
 
 }

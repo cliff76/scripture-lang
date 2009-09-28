@@ -1,12 +1,10 @@
+\.rej$
+\.chg\..*$
+src/com/quesoconcarne/scripture/Scripture.tokens
+\.conflict\~$
 build/.*$
 dist/.*$
 src/.+\.class$
 src/.+__Test__.+$
-src/com/quesoconcarne/scripture/ScriptureParser.java
-\.orig\..*$
-src/com/quesoconcarne/scripture/Scripture.tokens
-\.conflict\~$
-src/com/quesoconcarne/scripture/ScriptureLexer.java
-\.chg\..*$
 \.orig$
-\.rej$
+\.orig\..*$

@@ -7,9 +7,10 @@ import java.net.URL;
 public class ProgramTest extends ScriptureTestCase {
 
     public void testSimpleProgram() throws Exception {
-        URL inputURL = getClass().getResource(getClass().getSimpleName() + ".scripture");
-        Program program = getProgram(inputURL.getPath());
-        ScriptureScriptEngine target = new ScriptureScriptEngine();
+        final URL inputURL = getClass().getResource(getClass().getSimpleName() + ".scripture");
+        final Program program = getProgram(inputURL.getPath());
+
+        final ScriptureScriptEngine target = new ScriptureScriptEngine();
         target.setOutputFile("/tmp/javaTargetTest");
         target.run(program);
     }
